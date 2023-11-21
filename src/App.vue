@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, watch } from "vue";
-import { RouterLink, RouterView, useRouter } from "vue-router";
+import { RouterView, useRouter } from "vue-router";
 
 import { supabase } from "./supabase-client";
 import { useAuth } from "./stores/auth.store";
@@ -16,7 +16,7 @@ onMounted(() => {
 
 watch(() => auth.user, (user) => {
     if (!user) {
-        router.push("/logout");
+        router.push("/");
     }
 });
 </script>
