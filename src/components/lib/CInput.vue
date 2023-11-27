@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, useAttrs } from "vue";
+import { randId } from "@/utils/rand";
 defineOptions({
     inheritAttrs: false,
 });
+
+const attrs = useAttrs();
 
 const props = defineProps<{
     modelValue: string | number;
@@ -16,6 +19,8 @@ const inputRef = ref<HTMLInputElement>();
 onMounted(() => {
     emit("update:modelValue", inputRef.value?.value);
 });
+
+const inputId = attrs.id as string || randId();
 
 const focused = ref(false);
 
@@ -41,7 +46,7 @@ const hasContent = computed(() => {
                 'top-2': !(focused || hasContent),
                 '-top-[10px] text-xs font-bold': focused || hasContent
             }"
-            :for="($attrs.id as string)"
+            :for="inputId"
         >
             {{ label }}
         </label>
@@ -49,7 +54,7 @@ const hasContent = computed(() => {
             v-bind="$attrs"
             ref="inputRef"
             class="outline-none bg-transparent w-full"
-            :id="($attrs.id as string)"
+            :id="inputId"
             :value="modelValue"
             @focus="focused = true"
             @blur="focused = false"

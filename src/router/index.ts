@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router"
-import HomeContainer from "@/views/home.vue";
-import HomeBase from "@/views/home/index.vue";
-import Register from "@/views/home/register.vue";
-import DashboardContainer from "@/views/dashboard.vue";
-import DashboardBase from "@/views/dashboard/index.vue";
+import Home from "@/views/home.vue";
+import SignIn from "@/views/auth/sign-in.vue";
+import SignUp from "@/views/auth/sign-up.vue";
+import Dashboard from "@/views/dashboard.vue";
+import DashboardHome from "@/views/dashboard/index.vue";
 
 import { useAuth } from "@/stores/auth.store";
 
@@ -12,37 +12,49 @@ const router = createRouter({
     routes: [
         {
             path: "/",
-            component: HomeContainer,
-            children: [
-                {
-                    path: "",
-                    name: "home",
-                    component: HomeBase,
-                },
-                {
-                    path: "register",
-                    name: "register",
-                    component: Register
+            name: "home",
+            component: Home,
+        },
+        {
+            path: "/sign-in",
+            name: "sign-in",
+            component: SignIn,
+            beforeEnter(_to, _from, next) {
+                const auth = useAuth();
+                if (auth.user) {
+                    next({ name: "dashboard" });
                 }
-            ],
+                next();
+            }
+        },
+        {
+            path: "/sign-up",
+            name: "sign-up",
+            component: SignUp,
+            beforeEnter(_to, _from, next) {
+                const auth = useAuth();
+                if (auth.user) {
+                    next({ name: "dashboard" });
+                }
+                next();
+            }
         },
         {
             path: "/dashboard",
-            component: DashboardContainer,
-            beforeEnter() {
+            component: Dashboard,
+            beforeEnter(_to, _from, next) {
                 const auth = useAuth();
-
                 if (!auth.user) {
-                    return "/"
+                    return next({ name: "sign-in" });
                 }
-                console.log(auth.user)
+                return next();
             },
             children: [
                 {
                     path: "",
                     name: "dashboard",
-                    component: DashboardBase
-                }
+                    component: DashboardHome
+                },
             ]
         },
     ],

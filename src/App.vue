@@ -9,16 +9,16 @@ const router = useRouter();
 const auth = useAuth();
 
 onMounted(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
+    supabase.auth.onAuthStateChange((_event, session) => {
         auth.user = session?.user;
     });
 });
 
-watch(() => auth.user, (user) => {
-    if (!user) {
-        router.push("/");
-    }
-});
+// watch(() => auth.user, (user) => {
+//     if (!user) {
+//         router.push("/");
+//     }
+// });
 </script>
 
 <template>

@@ -11,7 +11,7 @@ type SubmissionStatus = "idle" | "busy" | "done";
 function useForm<
     Data = any,
     Fields extends Record<string, any> = {}
->(fields: Fields) {
+>(fields: Fields = {} as Fields) {
     const error = ref("");
     const data = ref<Data>();
     const success = ref(false);
@@ -41,7 +41,9 @@ function useForm<
         },
         createSubmitHandler(onSubmit: SubmitHandler<Data, Fields>) {
             return async () => {
+                status.value = "busy";
                 const result = await onSubmit(reactiveFields);
+                status.value = "done";
                 success.value = result?.success ?? true;
                 data.value = result?.data;
                 error.value = result?.success === false && result.message || "";

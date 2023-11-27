@@ -9,7 +9,7 @@ import { supabase } from "@/supabase-client";
 const router = useRouter();
 const auth = useAuth();
 
-const loginForm = useForm({ email: "",  password: "" });
+const loginForm = useForm({ email: "", password: "" });
 
 const handleLogin = loginForm.createSubmitHandler(async ({ email, password }) => {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -17,16 +17,17 @@ const handleLogin = loginForm.createSubmitHandler(async ({ email, password }) =>
         password,
     })
 
-    router.push("/dashboard")
+    if (data.user) {
+        router.push("/dashboard");
+        return { success: true };
+    }
 
-    return { success: true };
-})
-
+    return { success: false, message: error?.message };
+});
 </script>
 
 <template>
     <div class="flex items-center justify-center min-h-screen">
-
         <RouterLink v-if="auth.user" :to="{ name: 'dashboard' }">
             Dashboard
         </RouterLink>
