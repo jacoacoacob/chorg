@@ -3,11 +3,10 @@ CREATE TABLE
     profiles (
         id UUID REFERENCES auth.users ON DELETE CASCADE NOT NULL PRIMARY KEY,
         updated_at TIMESTAMP WITH TIME ZONE,
-        username TEXT UNIQUE,
-        full_name TEXT,
+        display_name TEXT UNIQUE,
         avatar_url TEXT,
         website TEXT,
-        CONSTRAINT username_length CHECK (CHAR_LENGTH(username) >= 3)
+        CONSTRAINT display_name_length CHECK (CHAR_LENGTH(display_name) >= 3)
     );
 
 
@@ -33,11 +32,12 @@ UPDATE USING (auth.uid () = id);
 -- This trigger automatically creates a profile entry when a new user signs up via Supabase Auth.
 -- See https://supabase.com/docs/guides/auth/managing-user-data#using-triggers for more details.
 CREATE FUNCTION public.handle_new_user () RETURNS TRIGGER AS $$
-begin
-  insert into public.profiles (id, full_name, avatar_url)
-  values (new.id, new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'avatar_url');
-  return new;
-end;
+BEGIN
+    INSERT INTO public.profiles (id, avatar_url)
+    VALUES (new.id, new.raw_user_meta_data->>'avatar_url');
+
+    RETURN new;
+END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 

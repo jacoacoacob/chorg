@@ -27,20 +27,23 @@ function useForm<
         )
     );
 
+    function reset() {
+        status.value = "idle";
+        success.value = false;
+        error.value = "";
+        data.value = undefined;
+    }
+
     return {
         fields: reactiveFields,
         error,
         data,
         success,
         status,
-        reset() {
-            status.value = "idle";
-            success.value = false;
-            error.value = "";
-            data.value = undefined;
-        },
+        reset,
         createSubmitHandler(onSubmit: SubmitHandler<Data, Fields>) {
             return async () => {
+                reset();
                 status.value = "busy";
                 const result = await onSubmit(reactiveFields);
                 status.value = "done";

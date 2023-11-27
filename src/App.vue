@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { onMounted, watch } from "vue";
-import { RouterView, useRouter } from "vue-router";
+import { onMounted } from "vue";
+import { RouterView } from "vue-router";
 
 import { supabase } from "./supabase-client";
 import { useAuth } from "./stores/auth.store";
 
-const router = useRouter();
 const auth = useAuth();
 
 onMounted(() => {
@@ -13,12 +12,6 @@ onMounted(() => {
         auth.user = session?.user;
     });
 });
-
-// watch(() => auth.user, (user) => {
-//     if (!user) {
-//         router.push("/");
-//     }
-// });
 </script>
 
 <template>
