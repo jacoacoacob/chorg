@@ -1,28 +1,48 @@
 <script setup lang="ts">
+import CAlert from '@/components/lib/CAlert.vue';
+import CInput from '@/components/lib/CInput.vue';
+import CModal from '@/components/lib/CModal.vue';
+import { useForm } from '@/composables/use-form';
+import { ref } from 'vue';
+
+const createGroupForm = useForm({
+    name: "",
+    members: [] as string[],
+});
+
+const showCreateGroupModal = ref(false);
+
+function closeCreateGroupModal() {
+    showCreateGroupModal.value = false;
+    createGroupForm.reset();
+}
+
+const creatNewGroup = createGroupForm.createSubmitHandler(
+    async ({ name, members }) => {
+
+
+        return { success: false, message: "An unknown error occurred." };
+    }
+);
 
 </script>
 
 <template>
-    <ul>
-        <li>Create group</li>
-        <li>List groups</li>
-    </ul>
-    <!-- <div class="flex space-x-4">
-        <div class="flex-1 flex flex-col space-y-4">
-            <div class="card">
-                <h2>Groups</h2>
+    <div>
+        <button @click="showCreateGroupModal = true">
+            Create group
+        </button>
+        <CModal :isOpen="showCreateGroupModal" :onClose="closeCreateGroupModal">
+            <template #title>
+                Create a new group
+            </template>
+            <div class="space-y-4">
+                <CAlert level="error" :show="createGroupForm.error.value.length > 0" :message="createGroupForm.error.value" />
+                <form @submit.prevent="creatNewGroup">
+                    <CInput v-model="createGroupForm.fields.name" />
+                    <button type="submit">Create group</button>
+                </form>
             </div>
-            <div class="card">
-                <h2>Chore sets</h2>
-            </div>
-        </div>
-        <div class="flex-1 flex flex-col space-y-4">
-            <div class="card">
-                <h2>Chores</h2>
-            </div>
-            <div class="card">
-                <h2>Tasks</h2>
-            </div>
-        </div>
-    </div> -->
+        </CModal>
+    </div>
 </template>

@@ -1,19 +1,19 @@
 import { reactive, ref, unref } from "vue";
 
-type SubmitHandler<Data, Fields> = (fields: Fields) => Promise<{
+type SubmitHandler<ResponseData, Fields> = (fields: Fields) => Promise<{
     success: boolean;
     message?: string;
-    data?: Data;
+    data?: ResponseData;
 }>;
 
 type SubmissionStatus = "idle" | "busy" | "done";
 
 function useForm<
-    Data = any,
+    ResponseData = any,
     Fields extends Record<string, any> = {}
 >(fields: Fields = {} as Fields) {
     const error = ref("");
-    const data = ref<Data>();
+    const data = ref<ResponseData>();
     const success = ref(false);
     const status = ref<SubmissionStatus>("idle");
 
@@ -41,7 +41,7 @@ function useForm<
         success,
         status,
         reset,
-        createSubmitHandler(onSubmit: SubmitHandler<Data, Fields>) {
+        createSubmitHandler(onSubmit: SubmitHandler<ResponseData, Fields>) {
             return async () => {
                 reset();
                 status.value = "busy";
@@ -50,7 +50,7 @@ function useForm<
                 success.value = result?.success ?? true;
                 data.value = result?.data;
                 error.value = result?.success === false && result.message || "";
-            }
+            };
         }
     };
 }
