@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import CAlert from '@/components/lib/CAlert.vue';
-import CInput from '@/components/lib/CInput.vue';
-import CModal from '@/components/lib/CModal.vue';
-import { useForm } from '@/composables/use-form';
-import { ref } from 'vue';
+import { onMounted, ref } from "vue";
+import CAlert from "@/components/lib/CAlert.vue";
+import CInput from "@/components/lib/CInput.vue";
+import CModal from "@/components/lib/CModal.vue";
+import { useForm } from "@/composables/use-form";
+import { useGroups } from "@/stores/groups.store";
+import { isNativeError } from "util/types";
 
-const createGroupForm = useForm({
-    name: "",
-    members: [] as string[],
-});
+const groups = useGroups();
+
+const createGroupForm = useForm({ name: "" });
 
 const showCreateGroupModal = ref(false);
 
@@ -18,12 +19,25 @@ function closeCreateGroupModal() {
 }
 
 const creatNewGroup = createGroupForm.createSubmitHandler(
-    async ({ name, members }) => {
-
-
-        return { success: false, message: "An unknown error occurred." };
+    async ({ name }) => {
+        try {
+            await groups.createGroup(name);
+            await groups.getGroupList();
+        } catch (error) {
+            return {
+                success: false,
+                message: typeof (error as any).message === "string"
+                    ? (error as any).message
+                    : "An unknown error occurred.",
+            };
+        }
+        return { success: true };
     }
 );
+
+onMounted(async () => {
+    await groups.getGroupList();
+});
 
 </script>
 
@@ -40,7 +54,7 @@ const creatNewGroup = createGroupForm.createSubmitHandler(
                 <CAlert level="error" :show="createGroupForm.error.value.length > 0" :message="createGroupForm.error.value" />
                 <form @submit.prevent="creatNewGroup">
                     <CInput v-model="createGroupForm.fields.name" />
-                    <button type="submit">Create group</button>
+                    <button  type="submit">Create group</button>
                 </form>
             </div>
         </CModal>
