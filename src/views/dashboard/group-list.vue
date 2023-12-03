@@ -51,10 +51,11 @@ onMounted(async () => {
                 Create a new group
             </template>
             <div class="space-y-4">
-                <CAlert level="error" :show="createGroupForm.error.value.length > 0" :message="createGroupForm.error.value" />
+                <CAlert level="error" :show="createGroupForm.error.value.length > 0"
+                    :message="createGroupForm.error.value" />
                 <form @submit.prevent="creatNewGroup">
                     <CInput v-model="createGroupForm.fields.name" />
-                    <button  type="submit">Create group</button>
+                    <button type="submit">Create group</button>
                 </form>
             </div>
         </CModal>

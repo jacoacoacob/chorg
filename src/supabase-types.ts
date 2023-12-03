@@ -34,121 +34,115 @@ export interface Database {
   }
   public: {
     Tables: {
-      chore: {
+      chart: {
         Row: {
+          chore_set_id: string | null
           created_at: string
-          display_name: string
+          group_id: string | null
           id: string
-          owner: string | null
+          owned_by: string | null
         }
         Insert: {
+          chore_set_id?: string | null
           created_at?: string
-          display_name: string
+          group_id?: string | null
           id?: string
-          owner?: string | null
+          owned_by?: string | null
         }
         Update: {
+          chore_set_id?: string | null
           created_at?: string
-          display_name?: string
+          group_id?: string | null
           id?: string
-          owner?: string | null
+          owned_by?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "chore_owner_fkey"
-            columns: ["owner"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      chore_chart: {
-        Row: {
-          chore_set: string | null
-          created_at: string
-          end: string | null
-          group: string | null
-          id: string
-          owner: string | null
-          start: string | null
-        }
-        Insert: {
-          chore_set?: string | null
-          created_at?: string
-          end?: string | null
-          group?: string | null
-          id?: string
-          owner?: string | null
-          start?: string | null
-        }
-        Update: {
-          chore_set?: string | null
-          created_at?: string
-          end?: string | null
-          group?: string | null
-          id?: string
-          owner?: string | null
-          start?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "chore_chart_chore_set_fkey"
-            columns: ["chore_set"]
+            foreignKeyName: "chart_chore_set_id_fkey"
+            columns: ["chore_set_id"]
             referencedRelation: "chore_set"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "chore_chart_group_fkey"
-            columns: ["group"]
+            foreignKeyName: "chart_group_id_fkey"
+            columns: ["group_id"]
             referencedRelation: "group"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "chore_chart_owner_fkey"
-            columns: ["owner"]
+            foreignKeyName: "chart_owned_by_fkey"
+            columns: ["owned_by"]
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
         ]
       }
-      chore_chart_completion: {
+      chart_completion: {
         Row: {
-          chore_chart: string | null
-          chore_task: string | null
+          chart_id: string | null
+          chore_task_id: string | null
           created_at: string
           id: string
-          owner: string | null
+          owned_by: string | null
         }
         Insert: {
-          chore_chart?: string | null
-          chore_task?: string | null
+          chart_id?: string | null
+          chore_task_id?: string | null
           created_at?: string
           id?: string
-          owner?: string | null
+          owned_by?: string | null
         }
         Update: {
-          chore_chart?: string | null
-          chore_task?: string | null
+          chart_id?: string | null
+          chore_task_id?: string | null
           created_at?: string
           id?: string
-          owner?: string | null
+          owned_by?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "chore_chart_completion_chore_chart_fkey"
-            columns: ["chore_chart"]
-            referencedRelation: "chore_chart"
+            foreignKeyName: "chart_completion_chart_id_fkey"
+            columns: ["chart_id"]
+            referencedRelation: "chart"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "chore_chart_completion_chore_task_fkey"
-            columns: ["chore_task"]
+            foreignKeyName: "chart_completion_chore_task_id_fkey"
+            columns: ["chore_task_id"]
             referencedRelation: "chore_task"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "chore_chart_completion_owner_fkey"
-            columns: ["owner"]
+            foreignKeyName: "chart_completion_owned_by_fkey"
+            columns: ["owned_by"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      chore: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          owned_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          owned_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          owned_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chore_owned_by_fkey"
+            columns: ["owned_by"]
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
@@ -156,22 +150,19 @@ export interface Database {
       }
       chore_chore_task: {
         Row: {
-          chore_id: string | null
-          chore_task_id: string | null
+          chore_id: string
+          chore_task_id: string
           created_at: string
-          id: string
         }
         Insert: {
-          chore_id?: string | null
-          chore_task_id?: string | null
+          chore_id: string
+          chore_task_id: string
           created_at?: string
-          id?: string
         }
         Update: {
-          chore_id?: string | null
-          chore_task_id?: string | null
+          chore_id?: string
+          chore_task_id?: string
           created_at?: string
-          id?: string
         }
         Relationships: [
           {
@@ -191,26 +182,26 @@ export interface Database {
       chore_set: {
         Row: {
           created_at: string
-          display_name: string
+          display_name: string | null
           id: string
-          owner: string | null
+          owned_by: string | null
         }
         Insert: {
           created_at?: string
-          display_name: string
+          display_name?: string | null
           id?: string
-          owner?: string | null
+          owned_by?: string | null
         }
         Update: {
           created_at?: string
-          display_name?: string
+          display_name?: string | null
           id?: string
-          owner?: string | null
+          owned_by?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "chore_set_owner_fkey"
-            columns: ["owner"]
+            foreignKeyName: "chore_set_owned_by_fkey"
+            columns: ["owned_by"]
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
@@ -218,22 +209,19 @@ export interface Database {
       }
       chore_set_chore: {
         Row: {
-          chore_id: string | null
-          chore_set_id: string | null
+          chore_id: string
+          chore_set_id: string
           created_at: string
-          id: string | null
         }
         Insert: {
-          chore_id?: string | null
-          chore_set_id?: string | null
+          chore_id: string
+          chore_set_id: string
           created_at?: string
-          id?: string | null
         }
         Update: {
-          chore_id?: string | null
-          chore_set_id?: string | null
+          chore_id?: string
+          chore_set_id?: string
           created_at?: string
-          id?: string | null
         }
         Relationships: [
           {
@@ -255,24 +243,24 @@ export interface Database {
           created_at: string
           description: string | null
           id: string
-          owner: string | null
+          owned_by: string | null
         }
         Insert: {
           created_at?: string
           description?: string | null
           id?: string
-          owner?: string | null
+          owned_by?: string | null
         }
         Update: {
           created_at?: string
           description?: string | null
           id?: string
-          owner?: string | null
+          owned_by?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "chore_task_owner_fkey"
-            columns: ["owner"]
+            foreignKeyName: "chore_task_owned_by_fkey"
+            columns: ["owned_by"]
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
@@ -283,24 +271,24 @@ export interface Database {
           created_at: string
           display_name: string | null
           id: string
-          owner: string | null
+          owned_by: string | null
         }
         Insert: {
           created_at?: string
           display_name?: string | null
           id?: string
-          owner?: string | null
+          owned_by?: string | null
         }
         Update: {
           created_at?: string
           display_name?: string | null
           id?: string
-          owner?: string | null
+          owned_by?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "group_owner_fkey"
-            columns: ["owner"]
+            foreignKeyName: "group_owned_by_fkey"
+            columns: ["owned_by"]
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
@@ -308,28 +296,25 @@ export interface Database {
       }
       group_chore_set: {
         Row: {
-          chore_id: string | null
+          chore_set_id: string
           created_at: string
-          group_id: string | null
-          id: string
+          group_id: string
         }
         Insert: {
-          chore_id?: string | null
+          chore_set_id: string
           created_at?: string
-          group_id?: string | null
-          id?: string
+          group_id: string
         }
         Update: {
-          chore_id?: string | null
+          chore_set_id?: string
           created_at?: string
-          group_id?: string | null
-          id?: string
+          group_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "group_chore_set_chore_id_fkey"
-            columns: ["chore_id"]
-            referencedRelation: "chore"
+            foreignKeyName: "group_chore_set_chore_set_id_fkey"
+            columns: ["chore_set_id"]
+            referencedRelation: "chore_set"
             referencedColumns: ["id"]
           },
           {
@@ -340,34 +325,31 @@ export interface Database {
           }
         ]
       }
-      group_user: {
+      group_member: {
         Row: {
           created_at: string
-          group_id: string | null
-          id: number
-          user_id: string | null
+          group_id: string
+          user_id: string
         }
         Insert: {
           created_at?: string
-          group_id?: string | null
-          id?: number
-          user_id?: string | null
+          group_id: string
+          user_id: string
         }
         Update: {
           created_at?: string
-          group_id?: string | null
-          id?: number
-          user_id?: string | null
+          group_id?: string
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "group_user_group_id_fkey"
+            foreignKeyName: "group_member_group_id_fkey"
             columns: ["group_id"]
             referencedRelation: "group"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "group_user_user_id_fkey"
+            foreignKeyName: "group_member_user_id_fkey"
             columns: ["user_id"]
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -410,7 +392,20 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_group_member: {
+        Args: {
+          _user_id: string
+          _group_id: string
+        }
+        Returns: boolean
+      }
+      is_group_owner: {
+        Args: {
+          _user_id: string
+          _group_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

@@ -3,7 +3,7 @@ import { supabase, type Tables } from "@/supabase-client";
 import { useAuth } from "./auth.store";
 import { ref } from "vue";
 
-type GroupList = Awaited<ReturnType<typeof fetchGroupList>>
+type GroupList = Awaited<ReturnType<typeof fetchGroupList>>;
 
 async function fetchGroupList(userId: string) {
     try {
@@ -12,9 +12,10 @@ async function fetchGroupList(userId: string) {
             .select(`
                 id,
                 display_name,
-                owner,
+                owned_by,
                 profiles (
-                    id
+                    id,
+                    display_name
                 )
             `);
 
@@ -33,9 +34,9 @@ async function fetchGroupList(userId: string) {
 async function fetchCreateGroupMember(groupId: string, userId: string) {
     try {
         const { error } = await supabase
-            .from("group_user")
-            .insert({ group_id: groupId, user_id: userId });
-        
+            .from("group_member")
+            .insert({ group_id: groupId, user_id: userId })
+
         if (error) {
             throw error;
         }
@@ -69,7 +70,7 @@ const useGroups = defineStore("groups", () => {
     const groupList = ref<GroupList>([]);
 
     const auth = useAuth();
-    
+
     async function getGroupList() {
         try {
             const { user } = auth;
@@ -83,19 +84,19 @@ const useGroups = defineStore("groups", () => {
             console.error("[getGroupList]", error);
         }
     }
-    
+
     async function createGroup(displayName: string) {
         try {
             const { user } = auth;
-            
+
             if (!user) {
                 throw new Error("Unauthenticated");
             }
 
             const group = await fetchCreateGroup(displayName);
-    
+
             await fetchCreateGroupMember(group.id, user.id);
-    
+
         } catch (error) {
             console.log()
             throw error;
