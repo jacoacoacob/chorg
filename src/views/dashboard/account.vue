@@ -1,0 +1,52 @@
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
+import CInput from "@/components/lib/CInput.vue";
+import { useForm } from "@/composables/use-form";
+import { useAuth } from "@/stores/auth.store";
+import { supabase } from "@/supabase-client";
+
+const auth = useAuth();
+
+const updateProfile = useForm({ username: "" });
+const currentProfile = ref({ username: "" }) 
+
+const handleUpdate = updateProfile.createSubmitHandler(async ({ username }) => {
+
+  if (username.trim().length < 3) {
+    return { success: false, message: "Username must contain at least 3 characters" };
+  } 
+
+  const { error } = await supabase.auth.updateUser({
+    data: {
+      username,
+    }
+  });
+
+  if (error) {
+    return { success: false, message: error.message };
+  }
+
+  return { success: true };
+});
+
+onMounted(() => {
+  updateProfile.fields.username = auth.user?.user_metadata.username ?? "";
+  currentProfile.value.username = auth.user?.user_metadata.username ?? "";
+});
+
+</script>
+
+<template>
+  <form @submit.prevent="handleUpdate" class="space-y-4">
+    <CInput v-model="updateProfile.fields.username" label="Username" />
+    <button
+      class="
+        px-2 py-1 bg-slate-100 border border-slate-400 rounded
+        disabled:opacity-60
+      "
+      :disabled="updateProfile.fields.username === currentProfile.username"
+    >
+      Save changes
+    </button>
+  </form>
+</template>

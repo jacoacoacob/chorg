@@ -351,36 +351,36 @@ export interface Database {
           {
             foreignKeyName: "group_member_user_id_fkey"
             columns: ["user_id"]
-            referencedRelation: "profiles"
+            referencedRelation: "user_profile"
             referencedColumns: ["id"]
           }
         ]
       }
-      profiles: {
+      user_profile: {
         Row: {
           avatar_url: string | null
-          display_name: string | null
           id: string
           updated_at: string | null
+          username: string
           website: string | null
         }
         Insert: {
           avatar_url?: string | null
-          display_name?: string | null
           id: string
           updated_at?: string | null
+          username: string
           website?: string | null
         }
         Update: {
           avatar_url?: string | null
-          display_name?: string | null
           id?: string
           updated_at?: string | null
+          username?: string
           website?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "profiles_id_fkey"
+            foreignKeyName: "user_profile_id_fkey"
             columns: ["id"]
             referencedRelation: "users"
             referencedColumns: ["id"]

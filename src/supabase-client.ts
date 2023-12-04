@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 
 import type { Database } from "./supabase-types";
 
-type Tables<T extends keyof Database["public"]["Tables"]> = Database["public"]["Tables"][T]["Row"];
+type Table<T extends keyof Database["public"]["Tables"]> = Database["public"]["Tables"][T]["Row"];
 
 const supabase = createClient<Database>(
     import.meta.env.VITE_SUPABASE_URL,
@@ -10,4 +10,4 @@ const supabase = createClient<Database>(
 );
 
 export { supabase };
-export type { Database, Tables }
+export type { Database, Table }

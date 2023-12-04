@@ -5,7 +5,6 @@ import CInput from "@/components/lib/CInput.vue";
 import CModal from "@/components/lib/CModal.vue";
 import { useForm } from "@/composables/use-form";
 import { useGroups } from "@/stores/groups.store";
-import { isNativeError } from "util/types";
 
 const groups = useGroups();
 
@@ -22,7 +21,6 @@ const creatNewGroup = createGroupForm.createSubmitHandler(
     async ({ name }) => {
         try {
             await groups.createGroup(name);
-            await groups.getGroupList();
         } catch (error) {
             return {
                 success: false,
@@ -46,13 +44,19 @@ onMounted(async () => {
         <button @click="showCreateGroupModal = true">
             Create group
         </button>
-        <CModal :isOpen="showCreateGroupModal" :onClose="closeCreateGroupModal">
+        <CModal
+            :isOpen="showCreateGroupModal"
+            :onClose="closeCreateGroupModal"
+        >
             <template #title>
                 Create a new group
             </template>
             <div class="space-y-4">
-                <CAlert level="error" :show="createGroupForm.error.value.length > 0"
-                    :message="createGroupForm.error.value" />
+                <CAlert
+                    level="error"
+                    :show="createGroupForm.error.value.length > 0"
+                    :message="createGroupForm.error.value"
+                />
                 <form @submit.prevent="creatNewGroup">
                     <CInput v-model="createGroupForm.fields.name" />
                     <button type="submit">Create group</button>

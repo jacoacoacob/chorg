@@ -9,6 +9,7 @@ import GroupList from "@/views/dashboard/group-list.vue";
 import ChoreList from "@/views/dashboard/chore-list.vue";
 import ChoreSetList from "@/views/dashboard/chore-set-list.vue";
 import ChoreTaskList from "@/views/dashboard/chore-task-list.vue";
+import Account from "@/views/dashboard/account.vue";
 
 import { useAuth } from "@/stores/auth.store";
 
@@ -82,6 +83,12 @@ const router = createRouter({
                     path: "chore-tasks",
                     name: "chore-task-list",
                     component: ChoreTaskList,
+                    beforeEnter: requireAuthenticated,
+                },
+                {
+                    path: "account",
+                    name: "account",
+                    component: Account,
                     beforeEnter: requireAuthenticated,
                 },
                 {

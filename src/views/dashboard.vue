@@ -26,12 +26,12 @@ onMounted(() => {
     <div class="flex flex-col min-h-screen">
         <header class="flex justify-between sticky top-0 w-full p-2 bg-sky-950 text-white">
             <h1>Dashboard</h1>
-            <div>
+            <div class="flex space-x-4">
                 <button @click="onLogout">Logout</button>
             </div>
         </header>
         <div class="flex-1 flex">
-            <div class="border-r w-[200px] text-slate-950 p-4">
+            <div class="border-r w-[200px] text-slate-950 p-4 flex flex-col justify-between">
                 <ul class="space-y-2">
                     <li>
                         <RouterLink :to="{ name: 'group-list' }" class="nav-link">Groups</RouterLink>
@@ -44,6 +44,10 @@ onMounted(() => {
                     </li>
                     <li>
                         <RouterLink :to="{ name: 'chore-set-list' }" class="nav-link">Chore Sets</RouterLink>
+                    </li>
+                    <hr>
+                    <li>
+                        <RouterLink :to="{ name: 'account' }" class="nav-link">Account</RouterLink>
                     </li>
                 </ul>
             </div>

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { supabase, type Tables } from "@/supabase-client";
+import { supabase } from "@/supabase-client";
 import { useAuth } from "./auth.store";
 import { ref } from "vue";
 
@@ -13,9 +13,9 @@ async function fetchGroupList(userId: string) {
                 id,
                 display_name,
                 owned_by,
-                profiles (
+                user_profile (
                     id,
-                    display_name
+                    username
                 )
             `);
 
@@ -97,6 +97,7 @@ const useGroups = defineStore("groups", () => {
 
             await fetchCreateGroupMember(group.id, user.id);
 
+            groupList.value = await fetchGroupList(user.id);
         } catch (error) {
             console.log()
             throw error;

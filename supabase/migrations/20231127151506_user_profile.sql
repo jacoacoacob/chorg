@@ -1,37 +1,35 @@
--- Create a table for public profiles
+-- Create a table for public user_profile
 CREATE TABLE IF NOT EXISTS
-  profiles (
+  user_profile (
     id UUID REFERENCES auth.users ON DELETE CASCADE NOT NULL PRIMARY KEY,
     updated_at TIMESTAMP WITH TIME ZONE,
-    display_name TEXT UNIQUE,
+    username TEXT UNIQUE NOT NULL,
     avatar_url TEXT,
     website TEXT,
-    CONSTRAINT display_name_length CHECK (CHAR_LENGTH(display_name) >= 3)
+    CONSTRAINT username_length CHECK (CHAR_LENGTH(username) >= 3)
   );
 
-ALTER TABLE public.profiles OWNER TO postgres;
+ALTER TABLE public.user_profile OWNER TO postgres;
 
 -- Set up Row Level Security (RLS)
 -- See https://supabase.com/docs/guides/auth/row-level-security for more details.
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_profile ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Public profiles are viewable by everyone." ON profiles FOR
+CREATE POLICY "Public user_profile are viewable by everyone." ON public.user_profile FOR
 SELECT
   USING (TRUE);
 
-CREATE POLICY "Users can insert their own profile." ON profiles FOR INSERT
-WITH
-  CHECK (auth.uid () = id);
-
-CREATE POLICY "Users can update own profile." ON profiles FOR
-UPDATE USING (auth.uid () = id);
-
+-- CREATE POLICY "Users can insert their own profile." ON public.user_profile FOR INSERT
+-- WITH
+--   CHECK (auth.uid () = id);
+-- CREATE POLICY "Users can update own profile." ON public.user_profile FOR
+-- UPDATE USING (auth.uid () = id);
 -- This trigger automatically creates a profile entry when a new user signs up via Supabase Auth.
 -- See https://supabase.com/docs/guides/auth/managing-user-data#using-triggers for more details.
 CREATE FUNCTION public.handle_new_user () RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, avatar_url)
-  VALUES (new.id, new.raw_user_meta_data->>'avatar_url');
+  INSERT INTO public.user_profile (id, avatar_url, username)
+  VALUES (new.id, new.raw_user_meta_data->>'avatar_url', new.raw_user_meta_data->>'username');
 
   RETURN new;
 END;
@@ -41,7 +39,24 @@ CREATE TRIGGER on_auth_user_created
 AFTER INSERT ON auth.users FOR EACH ROW
 EXECUTE PROCEDURE public.handle_new_user ();
 
--- Set up Storage!
+CREATE FUNCTION public.handle_updated_user () RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE public.user_profile
+  SET
+    avatar_url = NEW.raw_user_meta_data->>'avatar_url',
+    username = NEW.raw_user_meta_data->>'username'
+  WHERE id = NEW.id;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_updated
+AFTER
+UPDATE ON auth.users FOR EACH ROW
+EXECUTE PROCEDURE public.handle_updated_user ();
+
+-- Set up storage!
 INSERT INTO
   STORAGE.buckets (id, NAME)
 VALUES

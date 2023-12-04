@@ -1,3 +1,10 @@
 {
-    "css.customData": [".vscode/tailwind.json"]
+    "css.customData": [
+        ".vscode/tailwind.json"
+    ],
+    // "prettier.enable": true,
+    // "prettier.trailingComma": "all",
+    // "vue.complete.casing.props": "autoCamel",
+    // "prettier.singleAttributePerLine": true,
+    "html.format.wrapAttributes": "force-expand-multiline"
 }
