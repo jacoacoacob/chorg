@@ -5,7 +5,7 @@ import { ref } from "vue";
 
 type GroupList = Awaited<ReturnType<typeof fetchGroupList>>;
 
-async function fetchGroupList(userId: string) {
+async function fetchGroupList() {
     try {
         const { data, error } = await supabase
             .from("group")
@@ -13,7 +13,7 @@ async function fetchGroupList(userId: string) {
                 id,
                 display_name,
                 owned_by,
-                user_profile (
+                members:user_profile (
                     id,
                     username
                 )
@@ -79,7 +79,7 @@ const useGroups = defineStore("groups", () => {
                 throw new Error("Unauthenticated");
             }
 
-            groupList.value = await fetchGroupList(user.id);
+            groupList.value = await fetchGroupList();
         } catch (error) {
             console.error("[getGroupList]", error);
         }
@@ -97,7 +97,7 @@ const useGroups = defineStore("groups", () => {
 
             await fetchCreateGroupMember(group.id, user.id);
 
-            groupList.value = await fetchGroupList(user.id);
+            groupList.value = await fetchGroupList();
         } catch (error) {
             console.log()
             throw error;

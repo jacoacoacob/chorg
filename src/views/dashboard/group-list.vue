@@ -44,6 +44,10 @@ onMounted(async () => {
         <button @click="showCreateGroupModal = true">
             Create group
         </button>
+        <pre>
+{{ groups.groupList }}
+        </pre>
+
         <CModal
             :isOpen="showCreateGroupModal"
             :onClose="closeCreateGroupModal"

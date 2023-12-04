@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref, type Ref } from "vue";
 import CInput from "@/components/lib/CInput.vue";
 import { useForm } from "@/composables/use-form";
 import { useAuth } from "@/stores/auth.store";
 import { supabase } from "@/supabase-client";
+import {  useDiff } from "@/composables/use-diff";
 
 const auth = useAuth();
 
 const updateProfile = useForm({ username: "" });
 const currentProfile = ref({ username: "" }) 
+
+const diff = useDiff(currentProfile, updateProfile.fields);
 
 const handleUpdate = updateProfile.createSubmitHandler(async ({ username }) => {
 
@@ -40,11 +43,8 @@ onMounted(() => {
   <form @submit.prevent="handleUpdate" class="space-y-4">
     <CInput v-model="updateProfile.fields.username" label="Username" />
     <button
-      class="
-        px-2 py-1 bg-slate-100 border border-slate-400 rounded
-        disabled:opacity-60
-      "
-      :disabled="updateProfile.fields.username === currentProfile.username"
+      class="button button-primary"
+      :disabled="diff.length === 0"
     >
       Save changes
     </button>
