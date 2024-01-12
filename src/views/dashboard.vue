@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useForm } from "@/composables/use-form";
-import { supabase } from "@/supabase-client";
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { supabase } from "@/supabase-client";
+import { useForm } from "@/composables/use-form";
+import DashboardBreadcrumbs from "@/components/DashboardBreadcrumbs.vue";
 
 const router = useRouter();
 
@@ -52,6 +53,7 @@ onMounted(() => {
                 </ul>
             </div>
             <div class="p-4">
+                <DashboardBreadcrumbs />
                 <RouterView />
             </div>
         </div>

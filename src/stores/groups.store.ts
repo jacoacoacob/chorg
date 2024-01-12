@@ -2,68 +2,49 @@ import { defineStore } from "pinia";
 import { supabase } from "@/supabase-client";
 import { useAuth } from "./auth.store";
 import { ref } from "vue";
+import { makeListFetcher, makeSingleFetcher } from "@/utils/fetcher";
+import { assertAuthenticated } from "@/utils/assert-authenticated";
 
 type GroupList = Awaited<ReturnType<typeof fetchGroupList>>;
 
-async function fetchGroupList() {
-    try {
-        const { data, error } = await supabase
-            .from("group")
-            .select(`
-                id,
-                display_name,
-                owned_by,
-                members:user_profile (
-                    id,
-                    username
-                )
-            `);
+const fetchGroupList = makeListFetcher(async () => supabase.from("group").select(`
+    id,
+    display_name,
+    owned_by,
+    members:user_profile (
+        id,
+        username
+    )  
+`));
 
-        if (error) {
-            throw error;
-        }
+const fetchGroupDetail = makeSingleFetcher(async (groupId: string) => supabase
+    .from("group")
+    .select(`
+        id,
+        display_name,
+        owned_by,
+        members:user_profile (
+            id,
+            username
+        )
+    `)
+    .eq("id", groupId)
+    .single()
+);
 
-        console.log(data)
-        return data;
-    } catch (error) {
-        console.error("[fetchGroupList]", error);
-        throw error;
-    }
-}
+const fetchCreateGroupMember = makeSingleFetcher(
+    async (groupId: string, userId: string) => supabase
+        .from("group_member")
+        .insert({ group_id: groupId, user_id: userId })
+);
 
-async function fetchCreateGroupMember(groupId: string, userId: string) {
-    try {
-        const { error } = await supabase
-            .from("group_member")
-            .insert({ group_id: groupId, user_id: userId })
-
-        if (error) {
-            throw error;
-        }
-    } catch (error) {
-        console.error("[fetchCreateGroupMember]", error)
-        throw error;
-    }
-}
-
-async function fetchCreateGroup(displayName: string) {
-    try {
-        const { data, error } = await supabase
-            .from("group")
-            .insert({ display_name: displayName })
-            .select()
-            .single();
-
-        if (error) {
-            throw error;
-        }
-
-        return data;
-    } catch (error) {
-        console.error("[fetchCreateGroup]", error)
-        throw error;
-    }
-}
+const fetchCreateGroup = makeSingleFetcher(
+    async (displayName: string) => supabase
+        .from("group")
+        .insert({ display_name: displayName })
+        .select()
+        .single()
+);
 
 const useGroups = defineStore("groups", () => {
 
@@ -71,7 +52,7 @@ const useGroups = defineStore("groups", () => {
 
     const auth = useAuth();
 
-    async function getGroupList() {
+    async function refreshGroupList() {
         try {
             const { user } = auth;
 
@@ -81,7 +62,25 @@ const useGroups = defineStore("groups", () => {
 
             groupList.value = await fetchGroupList();
         } catch (error) {
-            console.error("[getGroupList]", error);
+            console.error("[refreshGroupList]", error);
+        }
+    }
+
+    async function refreshGroupDetail(groupId: string) {
+        try {
+            assertAuthenticated();
+
+            const indexOfGroup = groupList.value.findIndex((g) => g.id === groupId);
+
+            const group = await fetchGroupDetail(groupId);
+
+            if (indexOfGroup > -1) {
+                groupList.value.splice(indexOfGroup, 1, group);
+            } else {
+                groupList.value.push(group);
+            }
+        } catch (error) {
+            console.error("[refreshGroupDetail]", error);
         }
     }
 
@@ -104,7 +103,7 @@ const useGroups = defineStore("groups", () => {
         }
     }
 
-    return { createGroup, getGroupList, groupList };
+    return { createGroup, refreshGroupList, refreshGroupDetail, groupList };
 });
 
 export { useGroups };

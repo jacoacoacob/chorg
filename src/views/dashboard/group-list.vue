@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
+import { RouterLink } from "vue-router";
 import CAlert from "@/components/lib/CAlert.vue";
 import CInput from "@/components/lib/CInput.vue";
 import CModal from "@/components/lib/CModal.vue";
@@ -34,19 +35,24 @@ const creatNewGroup = createGroupForm.createSubmitHandler(
 );
 
 onMounted(async () => {
-    await groups.getGroupList();
+    await groups.refreshGroupList();
 });
 
 </script>
 
 <template>
     <div>
-        <button @click="showCreateGroupModal = true">
+        <button @click="showCreateGroupModal = true" class="button-primary">
             Create group
         </button>
-        <pre>
-{{ groups.groupList }}
-        </pre>
+        
+        <ul>
+            <li v-for="group in groups.groupList">
+                <RouterLink :to="{ name: 'group-detail', params: { id: group.id }}">
+                    {{ group.display_name }}
+                </RouterLink>
+            </li>
+        </ul>
 
         <CModal
             :isOpen="showCreateGroupModal"
