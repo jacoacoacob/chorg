@@ -3,7 +3,6 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 import type { Breadcrumb } from "@/router";
 
-
 const breadcrumbs = computed(() => {
   const route = useRoute();
 
@@ -19,10 +18,13 @@ const breadcrumbs = computed(() => {
 </script>
 
 <template>
-  <ul class="flex space-x-2">
-    <li v-for="crumb in breadcrumbs">
-      <RouterLink v-if="crumb.to" :to="crumb.to">{{ crumb.text }}</RouterLink>
-      <span v-else>{{ crumb.text }}</span>
+  <ul class="flex space-x-2 pb-4">
+    <li v-for="crumb in breadcrumbs" class="space-x-2 font-mono text-sm">
+      <div v-if="crumb.to" class="space-x-2">
+        <RouterLink :to="crumb.to" class="text-blue-600">{{ crumb.text }}</RouterLink>
+        <span>/</span>
+      </div>
+      <div v-else>{{ crumb.text }}</div>
     </li>
   </ul>
 </template>

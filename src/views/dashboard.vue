@@ -41,9 +41,6 @@ onMounted(() => {
                         <RouterLink :to="{ name: 'chore-list' }" class="nav-link">Chores</RouterLink>
                     </li>
                     <li>
-                        <RouterLink :to="{ name: 'chore-task-list' }" class="nav-link">Chore Tasks</RouterLink>
-                    </li>
-                    <li>
                         <RouterLink :to="{ name: 'chore-set-list' }" class="nav-link">Chore Sets</RouterLink>
                     </li>
                     <hr>
@@ -52,7 +49,7 @@ onMounted(() => {
                     </li>
                 </ul>
             </div>
-            <div class="p-4">
+            <div class="p-4 flex flex-col w-full">
                 <DashboardBreadcrumbs />
                 <RouterView />
             </div>
@@ -68,7 +65,16 @@ onMounted(() => {
         focus:ring-2 focus:ring-blue-500;
 }
 
-.router-link-active {
+/* .router-link-active {
     @apply bg-slate-200 hover:bg-slate-200;
-}
+} */
 </style>
+
+`Chore`: A specific, granular task to be completed (e.g. Wash dishes, wipe down counter)
+
+`ChoreSet`: A collection of spatially or thematically related chores (e.g. Kitchen, Bathroom, Bills)
+
+`ChoreChart`: A collection of 1 or more `ChoreSet`s and a record of their `Chore`s' completion
+
+`Group`: A collection of `User`s, `Chore`s, `ChoreSet`s, and `ChoreChart`s.
+

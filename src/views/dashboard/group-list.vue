@@ -6,6 +6,7 @@ import CInput from "@/components/lib/CInput.vue";
 import CModal from "@/components/lib/CModal.vue";
 import { useForm } from "@/composables/use-form";
 import { useGroups } from "@/stores/groups.store";
+import GroupListItem from "@/components/GroupListItem.vue";
 
 const groups = useGroups();
 
@@ -21,7 +22,11 @@ function closeCreateGroupModal() {
 const creatNewGroup = createGroupForm.createSubmitHandler(
     async ({ name }) => {
         try {
+            if (name.trim().length === 0) {
+                throw new Error("Please give your group a name.")
+            }
             await groups.createGroup(name);
+            closeCreateGroupModal();
         } catch (error) {
             return {
                 success: false,
@@ -41,18 +46,40 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div>
-        <button @click="showCreateGroupModal = true" class="button-primary">
-            Create group
-        </button>
+    <div class="flex flex-col space-y-4">
+
+        <div class="space-y-4">
+            <div>
+                <button @click="showCreateGroupModal = true" class="button-primary">
+                    + Create group
+                </button>
+            </div>
         
-        <ul>
-            <li v-for="group in groups.groupList">
-                <RouterLink :to="{ name: 'group-detail', params: { id: group.id }}">
-                    {{ group.display_name }}
-                </RouterLink>
-            </li>
-        </ul>
+            <div class="border rounded p-4">
+                <h3 class="font-bold text-xl mb-4">My groups</h3>
+                <ul class="space-y-4">
+                    <li v-for="group in groups.groupList">
+                        <GroupListItem :groupId="group.id" />
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <button @click="showCreateGroupModal = true" class="button-primary">
+                    + Create chore
+                </button>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <button @click="showCreateGroupModal = true" class="button-primary">
+                    + Create chore set
+                </button>
+            </div>
+        </div>
 
         <CModal
             :isOpen="showCreateGroupModal"
