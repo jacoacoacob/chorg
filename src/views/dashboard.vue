@@ -37,9 +37,9 @@ onMounted(() => {
                     <li>
                         <RouterLink :to="{ name: 'group-list' }" class="nav-link">Groups</RouterLink>
                     </li>
-                    <li>
+                    <!-- <li>
                         <RouterLink :to="{ name: 'chore-list' }" class="nav-link">Chores</RouterLink>
-                    </li>
+                    </li> -->
                     <li>
                         <RouterLink :to="{ name: 'chore-set-list' }" class="nav-link">Chore Sets</RouterLink>
                     </li>
@@ -65,9 +65,9 @@ onMounted(() => {
         focus:ring-2 focus:ring-blue-500;
 }
 
-/* .router-link-active {
+.router-link-active {
     @apply bg-slate-200 hover:bg-slate-200;
-} */
+}
 </style>
 
 `Chore`: A specific, granular task to be completed (e.g. Wash dishes, wipe down counter)

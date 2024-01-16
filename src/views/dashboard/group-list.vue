@@ -49,35 +49,19 @@ onMounted(async () => {
     <div class="flex flex-col space-y-4">
 
         <div class="space-y-4">
-            <div>
+            <div class="py-4border-b">
                 <button @click="showCreateGroupModal = true" class="button-primary">
                     + Create group
                 </button>
             </div>
         
-            <div class="border rounded p-4">
+            <div class="">
                 <h3 class="font-bold text-xl mb-4">My groups</h3>
                 <ul class="space-y-4">
                     <li v-for="group in groups.groupList">
                         <GroupListItem :groupId="group.id" />
                     </li>
                 </ul>
-            </div>
-        </div>
-
-        <div class="space-y-4">
-            <div>
-                <button @click="showCreateGroupModal = true" class="button-primary">
-                    + Create chore
-                </button>
-            </div>
-        </div>
-
-        <div class="space-y-4">
-            <div>
-                <button @click="showCreateGroupModal = true" class="button-primary">
-                    + Create chore set
-                </button>
             </div>
         </div>
 

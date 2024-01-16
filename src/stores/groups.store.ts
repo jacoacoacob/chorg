@@ -26,12 +26,8 @@ const fetchGroupDetail = makeSingleFetcher(async (groupId: string) => supabase
             id,
             username
         ),
-        charts:chart (
-            id,
-            owned_by,
-            chore_set_id
-        ),
-        chore_sets:chore_set (*)
+        charts:chart(*),
+        chore_sets:chore_set(*)
     `)
     .eq("id", groupId)
     .single()
@@ -125,7 +121,7 @@ const useGroups = defineStore("groups", () => {
 
             await fetchCreateGroupMember(group.id, user.id);
 
-            await refreshGroupDetail(group.id);
+            await refreshGroupList();
         } catch (error) {
             throw error;
         }
