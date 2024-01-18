@@ -37,21 +37,29 @@ onMounted(() => {
                     <li>
                         <RouterLink :to="{ name: 'group-list' }" class="nav-link">Groups</RouterLink>
                     </li>
-                    <!-- <li>
+                    <li>
                         <RouterLink :to="{ name: 'chore-list' }" class="nav-link">Chores</RouterLink>
-                    </li> -->
+                    </li>
                     <li>
                         <RouterLink :to="{ name: 'chore-set-list' }" class="nav-link">Chore Sets</RouterLink>
                     </li>
+                    <!-- <hr>
+                    <li>
+                        <RouterLink :to="{ name: 'chore-set-list' }" class="nav-link">Charts</RouterLink>
+                    </li> -->
                     <hr>
                     <li>
                         <RouterLink :to="{ name: 'account' }" class="nav-link">Account</RouterLink>
                     </li>
                 </ul>
             </div>
-            <div class="p-4 flex flex-col w-full">
+            <div class="p-4 w-full">
                 <DashboardBreadcrumbs />
-                <RouterView />
+                <div class="flex flex-col items-center">
+                    <div class=" w-[800px]">
+                        <RouterView />
+                    </div> 
+                </div>
             </div>
         </div>
     </div>

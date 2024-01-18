@@ -16,18 +16,32 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    {{ group?.display_name }}
+  <div class="space-y-4  ">
+    
+    <div class="shadow rounded p-4">
+      <h1 class="font-bold text-2xl">
+        {{ group?.display_name }}
+      </h1>
+    </div>
+    
+    <div class="shadow rounded p-4">
+      <div class="flex justify-between">
+        <h3 class="font-bold text-lg">Members</h3>
+        <button>Add member</button>
+      </div>
+      <ul>
+        <li v-for="member in group?.members">
+          {{ member.username }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="shadow rounded p-4">
+      <div class="flex justify-between">
+        <h3 class="font-bold text-lg">Chore Sets</h3>
+        <button>Add chore set</button>
+      </div>
+    </div>
+
   </div>
-  <div>
-    <h3>Members</h3>
-    <ul>
-      <li v-for="member in group?.members">
-        {{ member.username }}
-      </li>
-    </ul>
-  </div>
-  <pre>
-{{ group }}
-  </pre>
 </template>

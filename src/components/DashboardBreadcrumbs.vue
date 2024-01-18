@@ -5,7 +5,7 @@ import type { Breadcrumb } from "@/router";
 
 const breadcrumbs = computed(() => {
   const route = useRoute();
-
+  
   if (route.meta.breadcrumbs) {
     return (route.meta.breadcrumbs as Breadcrumb[]).map((crumb) => ({
       text: typeof crumb.text === "function" ? crumb.text(route) : crumb.text,

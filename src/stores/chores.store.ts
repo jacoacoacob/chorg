@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 
 import { supabase } from "@/supabase-client";
 import { handleError } from "@/utils/handle-error";
-import { makeListFetcher, makeSingleFetcher, makeFetcher } from "@/utils/fetcher";
+import { makeFetcher } from "@/utils/fetcher";
 import { assertAuthenticated } from "@/utils/assert-authenticated";
 
 const fetchChoreList = makeFetcher(async () => supabase.from("chore").select(`*`));
@@ -35,6 +35,9 @@ const fetchCreateChore = makeFetcher(
     .single()
 );
 
+type ChoreList = Awaited<ReturnType<typeof fetchChoreList>>;
+type ChoreDetail = Awaited<ReturnType<typeof fetchChoreDetail>>;
+
 type UpdateChoreOptions = Pick<ChoreDetail, "id" | "description" | "title">;
 
 const fetchUpdateChore = makeFetcher(
@@ -50,8 +53,7 @@ const fetchDeleteChore = makeFetcher(
   async (choreId: string) => supabase.from("chore").delete().eq("id", choreId).select()
 );
 
-type ChoreList = Awaited<ReturnType<typeof fetchChoreList>>;
-type ChoreDetail = Awaited<ReturnType<typeof fetchChoreDetail>>;
+
 
 const useChores = defineStore("chores", () => {
   
