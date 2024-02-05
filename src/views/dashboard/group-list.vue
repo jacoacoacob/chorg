@@ -20,7 +20,7 @@ function closeCreateGroupModal() {
 }
 
 const creatNewGroup = createGroupForm.createSubmitHandler(
-    async ({ name }) => {
+    async (_, { name }) => {
         try {
             if (name.trim().length === 0) {
                 throw new Error("Please give your group a name.")
@@ -48,22 +48,21 @@ onMounted(async () => {
 <template>
     <div class="flex flex-col space-y-4">
 
-        <div class="space-y-4">
-            <div class="py-4border-b">
-                <button @click="showCreateGroupModal = true" class="button-primary">
-                    + Create group
-                </button>
-            </div>
-        
-            <div class="">
-                <h3 class="font-bold text-xl mb-4">My groups</h3>
-                <ul class="space-y-4">
-                    <li v-for="group in groups.groupList">
-                        <GroupListItem :groupId="group.id" />
-                    </li>
-                </ul>
-            </div>
+        <div class="card">
+            <button @click="showCreateGroupModal = true" class="button-primary">
+                + Create group
+            </button>
         </div>
+
+        <div class="card">
+            <h3 class="card__title">My groups</h3>
+            <ul class="space-y-4">
+                <li v-for="group in groups.groupList">
+                    <GroupListItem :groupId="group.id" />
+                </li>
+            </ul>
+        </div>
+
 
         <CModal
             :isOpen="showCreateGroupModal"
@@ -78,7 +77,7 @@ onMounted(async () => {
                     :show="createGroupForm.error.value.length > 0"
                     :message="createGroupForm.error.value"
                 />
-                <form @submit.prevent="creatNewGroup">
+                <form @submit="creatNewGroup">
                     <CInput v-model="createGroupForm.fields.name" />
                     <button type="submit">Create group</button>
                 </form>

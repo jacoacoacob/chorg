@@ -1,10 +1,10 @@
 import { reactive, ref, unref } from "vue";
 
-type SubmitHandler<ResponseData, Fields> = (fields: Fields) => Promise<{
+type SubmitHandler<ResponseData, Fields> = (ev: Event, fields: Fields) => Promise<{
     success: boolean;
     message?: string;
     data?: ResponseData;
-}>;
+} | undefined>;
 
 type SubmissionStatus = "idle" | "busy" | "done";
 
@@ -42,10 +42,11 @@ function useForm<
         status,
         reset,
         createSubmitHandler(onSubmit: SubmitHandler<ResponseData, Fields>) {
-            return async () => {
+            return async (ev: Event) => {
+                ev.preventDefault();
                 reset();
                 status.value = "busy";
-                const result = await onSubmit(reactiveFields);
+                const result = await onSubmit(ev, reactiveFields);
                 status.value = "done";
                 success.value = result?.success ?? true;
                 data.value = result?.data;

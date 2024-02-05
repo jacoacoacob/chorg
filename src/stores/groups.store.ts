@@ -1,72 +1,20 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import { supabase } from "@/supabase-client";
-import { makeFetcher } from "@/utils/fetcher";
+
+import {
+    fetchCreateGroup,
+    fetchDeleteGroup,
+    fetchGroupDetail, 
+    fetchGroupList,
+    fetchUpdateGroupDisplayName,
+    type GroupDetail,
+    type GroupList
+} from "@/model/group";
+import { fetchAddGroupMember, fetchRemoveGroupMember } from "@/model/group-member";
 import { assertAuthenticated } from "@/utils/assert-authenticated";
 import { handleError } from "@/utils/handle-error";
 
-type GroupList = Awaited<ReturnType<typeof fetchGroupList>>;
-type GroupDetail = Awaited<ReturnType<typeof fetchGroupDetail>>;
 type GroupListSortKey = keyof Pick<GroupList[number], "display_name" | "created_at">;
-
-const fetchGroupList = makeFetcher(async () => supabase.from("group").select(`
-    id,
-    display_name,
-    created_at,
-    owned_by
-`));
-
-const fetchGroupDetail = makeFetcher(async (groupId: string) => supabase
-    .from("group")
-    .select(`
-        id,
-        display_name,
-        created_at,
-        owned_by,
-        members:user_profile (
-            id,
-            username
-        ),
-        charts:chart(*),
-        chore_sets:chore_set(*)
-    `)
-    .eq("id", groupId)
-    .single()
-);
-
-const fetchAddGroupMember = makeFetcher(
-    async (groupId: string, userId: string) => supabase
-        .from("group_member")
-        .insert({ group_id: groupId, user_id: userId })
-);
-
-const fetchRemoveGroupMember = makeFetcher(
-    async (groupId: string, userId: string) => supabase
-        .from("group_member")
-        .delete()
-        .eq("group_id", groupId)
-        .eq("user_id", userId)
-);
-
-const fetchCreateGroup = makeFetcher(
-    async (displayName: string) => supabase
-        .from("group")
-        .insert({ display_name: displayName })
-        .select()
-        .single()
-);
-
-const fetchUpdateGroupDisplayName = makeFetcher(
-    async (groupId: string, displayName: string) => supabase
-        .from("group")
-        .update({ display_name: displayName })
-        .eq("id", groupId)
-        .select()
-);
-
-const fetchDeleteGroup = makeFetcher(
-    async (groupId: string) => supabase.from("group").delete().eq("id", groupId)
-);
 
 const useGroups = defineStore("groups", () => {
     const groupDetailDict = ref<Record<string, GroupDetail>>({});

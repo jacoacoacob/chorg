@@ -13,7 +13,7 @@ const currentProfile = ref({ username: "" })
 
 const diff = useDiff(currentProfile, updateProfile.fields);
 
-const handleUpdate = updateProfile.createSubmitHandler(async ({ username }) => {
+const handleUpdate = updateProfile.createSubmitHandler(async (_, { username }) => {
 
   if (username.trim().length < 3) {
     return { success: false, message: "Username must contain at least 3 characters" };

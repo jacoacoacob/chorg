@@ -11,7 +11,7 @@ const router = useRouter();
 
 const loginForm = useForm({ email: "", password: "" });
 
-const handleLogin = loginForm.createSubmitHandler(async ({ email, password }) => {
+const handleLogin = loginForm.createSubmitHandler(async (_, { email, password }) => {
     const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,

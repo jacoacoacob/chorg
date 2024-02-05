@@ -144,6 +144,7 @@ export interface Database {
       }
       chore: {
         Row: {
+          chore_set_id: string
           created_at: string
           description: string | null
           id: string
@@ -151,6 +152,7 @@ export interface Database {
           title: string
         }
         Insert: {
+          chore_set_id: string
           created_at?: string
           description?: string | null
           id?: string
@@ -158,6 +160,7 @@ export interface Database {
           title: string
         }
         Update: {
+          chore_set_id?: string
           created_at?: string
           description?: string | null
           id?: string
@@ -165,6 +168,12 @@ export interface Database {
           title?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "chore_chore_set_id_fkey"
+            columns: ["chore_set_id"]
+            referencedRelation: "chore_set"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "chore_owned_by_fkey"
             columns: ["owned_by"]
@@ -176,58 +185,36 @@ export interface Database {
       chore_set: {
         Row: {
           created_at: string
-          display_name: string | null
+          display_name: string
+          group_id: string
           id: string
           owned_by: string | null
         }
         Insert: {
           created_at?: string
-          display_name?: string | null
+          display_name: string
+          group_id: string
           id?: string
           owned_by?: string | null
         }
         Update: {
           created_at?: string
-          display_name?: string | null
+          display_name?: string
+          group_id?: string
           id?: string
           owned_by?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "chore_set_group_id_fkey"
+            columns: ["group_id"]
+            referencedRelation: "group"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "chore_set_owned_by_fkey"
             columns: ["owned_by"]
             referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      chore_set_chore: {
-        Row: {
-          chore_id: string
-          chore_set_id: string
-          created_at: string
-        }
-        Insert: {
-          chore_id: string
-          chore_set_id: string
-          created_at?: string
-        }
-        Update: {
-          chore_id?: string
-          chore_set_id?: string
-          created_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "chore_set_chore_chore_id_fkey"
-            columns: ["chore_id"]
-            referencedRelation: "chore"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "chore_set_chore_chore_set_id_fkey"
-            columns: ["chore_set_id"]
-            referencedRelation: "chore_set"
             referencedColumns: ["id"]
           }
         ]
@@ -256,37 +243,6 @@ export interface Database {
             foreignKeyName: "group_owned_by_fkey"
             columns: ["owned_by"]
             referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      group_chore_set: {
-        Row: {
-          chore_set_id: string
-          created_at: string
-          group_id: string
-        }
-        Insert: {
-          chore_set_id: string
-          created_at?: string
-          group_id: string
-        }
-        Update: {
-          chore_set_id?: string
-          created_at?: string
-          group_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "group_chore_set_chore_set_id_fkey"
-            columns: ["chore_set_id"]
-            referencedRelation: "chore_set"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "group_chore_set_group_id_fkey"
-            columns: ["group_id"]
-            referencedRelation: "group"
             referencedColumns: ["id"]
           }
         ]

@@ -4,7 +4,10 @@
 
 @layer components {
     .card {
-        @apply shadow-xl border p-12 rounded space-y-8;
+        @apply shadow rounded p-4 bg-white;
+    }
+    .card__title {
+        @apply font-bold text-xl mb-4;
     }
 
     .button {

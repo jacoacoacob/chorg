@@ -31,7 +31,7 @@ onMounted(() => {
                 <button @click="onLogout">Logout</button>
             </div>
         </header>
-        <div class="flex-1 flex">
+        <div class="flex-1 bg-slate-100 flex">
             <div class="border-r w-[200px] text-slate-950 p-4 flex flex-col justify-between">
                 <ul class="space-y-2">
                     <li>
@@ -53,13 +53,11 @@ onMounted(() => {
                     </li>
                 </ul>
             </div>
-            <div class="p-4 w-full">
-                <DashboardBreadcrumbs />
-                <div class="flex flex-col items-center">
-                    <div class=" w-[800px]">
-                        <RouterView />
-                    </div> 
-                </div>
+            <div class="p-4 w-full flex flex-col bg-slate-50">
+                <DashboardBreadcrumbs class="self-start" />
+                <div class="self-center w-[800px] px-2">
+                    <RouterView />
+                </div> 
             </div>
         </div>
     </div>
@@ -69,12 +67,12 @@ onMounted(() => {
 .nav-link {
     @apply
         w-full inline-block rounded px-4 py-2 outline-none
-        hover:bg-slate-100
+        hover:bg-slate-200
         focus:ring-2 focus:ring-blue-500;
 }
 
 .router-link-active {
-    @apply bg-slate-200 hover:bg-slate-200;
+    @apply bg-slate-300 hover:bg-slate-300;
 }
 </style>
 

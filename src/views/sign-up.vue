@@ -10,7 +10,7 @@ const router = useRouter();
 
 const signUpForm = useForm({ email: "", password: "", username: "" });
 
-const handleLogin = signUpForm.createSubmitHandler(async ({ email, password, username }) => {
+const handleLogin = signUpForm.createSubmitHandler(async (_, { email, password, username }) => {
     const { data, error } = await supabase.auth.signUp({
         email,
         password,

@@ -5,17 +5,33 @@ SELECT
   USING (
     id IN (
       SELECT
-        csc.chore_id
+        chore.id
       FROM
-        public.chore_set_chore csc
-        JOIN public.chore_set cs ON csc.chore_set_id = cs.id
-        JOIN public.group_chore_set gcs ON gcs.chore_set_id = cs.id
-        JOIN public.group_member gm ON gm.group_id = gcs.group_id
+        public.chore
+        JOIN public.chore_set cs ON chore.chore_set_id = cs.id
+        JOIN public.group_member gm ON gm.group_id = cs.group_id
       WHERE
         gm.user_id = auth.uid ()
     )
     OR auth.uid () = owned_by
   );
+
+-- CREATE POLICY "Enable read access to owners and members of groups where the chore included in a chore_set" ON public.chore FOR
+-- SELECT
+--   USING (
+--     id IN (
+--       SELECT
+--         csc.chore_id
+--       FROM
+--         public.chore_set_chore csc
+--         JOIN public.chore_set cs ON csc.chore_set_id = cs.id
+--         JOIN public.group_chore_set gcs ON gcs.chore_set_id = cs.id
+--         JOIN public.group_member gm ON gm.group_id = cs.group_id
+--       WHERE
+--         gm.user_id = auth.uid ()
+--     )
+--     OR auth.uid () = owned_by
+--   );
 
 CREATE POLICY "Enable insert for authenticated users only" ON public.chore FOR INSERT TO authenticated
 WITH

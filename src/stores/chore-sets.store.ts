@@ -1,60 +1,26 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-
-import { supabase } from "@/supabase-client";
 import { handleError } from "@/utils/handle-error";
-import { makeFetcher } from "@/utils/fetcher";
 import { assertAuthenticated } from "@/utils/assert-authenticated";
-
-const fetchChoreSetList = makeFetcher(async () => supabase.from("chore_set").select("*"));
-
-const fetchChoreSetDetail = makeFetcher(async (choreSetId: string) => supabase
-  .from("chore_set")
-  .select(`
-    *,
-    groups:group(*),
-    chores:chore(*)
-  `)
-  .eq("id", choreSetId)
-  .single()
-);
-
-type ChoreSetDetail = Awaited<ReturnType<typeof fetchChoreSetDetail>>;
-type ChoreSetList = Awaited<ReturnType<typeof fetchChoreSetList>>;
-
-type UpdateChoreSetOptions = Pick<ChoreSetDetail, "display_name" | "id">
-
-const fetchUpdateChoreSet = makeFetcher(
-  async ({ id, ...options }: UpdateChoreSetOptions) => supabase
-    .from("chore_set")
-    .update(options)
-    .select()
-    .single()
-);
-
-const fetchAddChore = makeFetcher(
-  async (choreSetId: string, choreId: string) => supabase
-    .from("chore_set_chore")
-    .upsert({ chore_set_id: choreSetId, chore_id: choreId })
-);
-
-const fetchRemoveChore = makeFetcher(
-  async (choreSetId: string, choreId: string) => supabase
-    .from("chore_set_chore")
-    .delete()
-    .eq("chore_set_id", choreSetId)
-    .eq("chore_id", choreId)
-);
+import {
+  fetchChoreSetDetail,
+  fetchChoreSetList,
+  fetchCreateChoreSet,
+  fetchUpdateChoreSet,
+  type ChoreSetDetail,
+  type ChoreSetList,
+} from "@/model/chore-set";
 
 const useChoreSets = defineStore("chore-sets", () => {
   const detail = ref<Record<string, ChoreSetDetail>>({});
-  const listDict = ref<Record<string, ChoreSetList>>({});
+  const _listDict = ref<Record<string, ChoreSetList[number]>>({});
 
-  const list = computed(() => Object.keys(listDict.value).map((choreSetId) => listDict.value[choreSetId]));
+  const list = computed(() => Object.keys(_listDict.value).map((choreSetId) => _listDict.value[choreSetId]));
 
   async function refreshChoreSetList() {
     try {
-      
+      const choreSetList = await fetchChoreSetList();
+      _listDict.value = Object.fromEntries(choreSetList.map((choreSet) => [choreSet.id, choreSet]));
     } catch (error) {
       handleError(error);
     }
@@ -62,21 +28,28 @@ const useChoreSets = defineStore("chore-sets", () => {
   
   async function refreshChoreSetDetail(choreSetId: string) {
     try {
-      
+      detail.value[choreSetId] = await fetchChoreSetDetail(choreSetId);
     } catch (error) {
       handleError(error);
     }
   }
 
-  async function createChoreSet(displayName: string) {
+  async function createChoreSet(displayName: string, groupId: string) {
     try {
-      
+      await fetchCreateChoreSet(displayName, groupId);
+      await refreshChoreSetList();
     } catch (error) {
       handleError(error);
     }
   }
 
-  return {};  
+  return {
+    detail,
+    list,
+    createChoreSet,
+    refreshChoreSetDetail,
+    refreshChoreSetList,
+  };
 });
 
 export { useChoreSets };
