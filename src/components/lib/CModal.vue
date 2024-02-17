@@ -42,12 +42,12 @@ defineProps<{
                         leave-to="opacity-0 scale-95"
                     >
                         <DialogPanel class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                            <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
-                                <slot name="title"></slot>
-                            </DialogTitle>
                             <button title="Close" class="absolute top-3 right-3 rounded" @click="() => onClose()">
                                 <IconXMark />
                             </button>
+                            <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
+                                <slot name="title"></slot>
+                            </DialogTitle>
                             <div class="mt-2">
                                 <slot></slot>
                             </div>

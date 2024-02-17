@@ -40,13 +40,17 @@ const createChoreSet = form.createSubmitHandler(
 </script>
 
 <template>
-  <CModal :isOpen="disclosures.showModal === 'create-chore-set'" :onClose="disclosures.hideModal">
+  <CModal
+    :isOpen="disclosures.showModal === 'create-chore-set'"
+    :onClose="disclosures.hideModal"
+    class="space-y-8"
+  >
     <template #title>
       Create Chore Set
     </template>
     <form @submit="createChoreSet" class="space-y-4">
       <CInput v-model="form.fields.displayName" label="Name" />
-      <button class="button bg-blue-500 text-white"  type="submit">Save</button>
+      <button class="button bg-blue-500 text-white" type="submit">Save</button>
     </form>
   </CModal>
 </template>

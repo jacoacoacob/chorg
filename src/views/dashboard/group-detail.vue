@@ -2,15 +2,19 @@
 import { computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
+import GroupChoreSetList from "@/components/GroupChoreSetList.vue";
 import CreateChoreSet from "@/components/CreateChoreSet.vue";
 import { useGroups } from "@/stores/groups.store";
 import { useDisclosures } from "@/stores/disclosures.store";
+import { useChoreSets } from "@/stores/chore-sets.store";
+import { useProvideRef } from "@/composables/use-provide-inject-ref";
 
 const route = useRoute();
 const groups = useGroups();
+const choreSets = useChoreSets();
 
 const group = computed(() =>
-  groups.groupDetailDict[route.params.id as string]
+  groups.detail[route.params.id as string]
 );
 
 const disclosures = useDisclosures();
@@ -18,6 +22,7 @@ const disclosures = useDisclosures();
 onMounted(async () => {
   await groups.refreshGroupDetail(route.params.id as string);
 });
+
 </script>
 
 <template>
@@ -40,19 +45,9 @@ onMounted(async () => {
       </ul>
     </div>
 
-    <div class="card">
-      <div class="flex justify-between">
-        <h3 class="card__title">Chore Sets</h3>
-        <button @click="disclosures.showModal = 'create-chore-set'">Add chore set</button>
-      </div>
-      <ul>
-        <li v-for="choreSet in group?.chore_sets">
-          {{ choreSet.display_name }}
-        </li>
-      </ul>
-    </div>
+    <GroupChoreSetList :groupId="($route.params.id as string)" />
 
     <CreateChoreSet :groupId="group?.id" />
 
   </div>
-</template>
+</template>@/composables/use-provide-inject-ref

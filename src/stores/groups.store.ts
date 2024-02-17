@@ -17,7 +17,7 @@ import { handleError } from "@/utils/handle-error";
 type GroupListSortKey = keyof Pick<GroupList[number], "display_name" | "created_at">;
 
 const useGroups = defineStore("groups", () => {
-    const groupDetailDict = ref<Record<string, GroupDetail>>({});
+    const detail = ref<Record<string, GroupDetail>>({});
 
     const groupListDict = ref<Record<string, GroupList[number]>>({});
     
@@ -64,7 +64,7 @@ const useGroups = defineStore("groups", () => {
         try {
             assertAuthenticated();
 
-            groupDetailDict.value[groupId] = await fetchGroupDetail(groupId);
+            detail.value[groupId] = await fetchGroupDetail(groupId);
         } catch (error) {
             console.error("[refreshGroupDetail]", error);
         }
@@ -132,7 +132,7 @@ const useGroups = defineStore("groups", () => {
         removeGroupMember,
         groupList,
         groupListDict,
-        groupDetailDict
+        detail
     };
 });
 

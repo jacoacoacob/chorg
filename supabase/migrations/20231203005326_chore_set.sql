@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     group_id UUID NOT NULL REFERENCES public.group ON DELETE CASCADE,
     owned_by UUID REFERENCES auth.users ON DELETE RESTRICT DEFAULT auth.uid (),
-    display_name TEXT NOT NULL,
+    display_name TEXT,
     UNIQUE (id, display_name)
   );
 

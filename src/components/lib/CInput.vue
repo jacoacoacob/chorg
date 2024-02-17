@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { onMounted, ref, computed, useAttrs } from "vue";
+import { onMounted, ref, computed, useAttrs, watch, type Ref } from "vue";
 import { randId } from "@/utils/rand";
+
 defineOptions({
     inheritAttrs: false,
 });
@@ -8,7 +9,8 @@ defineOptions({
 const attrs = useAttrs();
 
 const props = defineProps<{
-    modelValue: string | number;
+    modelValue: string | number | undefined;
+    shouldFocus?: boolean;
     label?: string;
     helpText?: string;
 }>();
@@ -16,6 +18,12 @@ const props = defineProps<{
 const emit = defineEmits(["update:modelValue"]);
 
 const inputRef = ref<HTMLInputElement>();
+
+watch(() => props.shouldFocus, (shouldFocus) => {
+    if (shouldFocus) {
+        inputRef.value?.focus();
+    }
+}, { immediate: true });
 
 onMounted(() => {
     emit("update:modelValue", inputRef.value?.value);
@@ -45,7 +53,7 @@ const hasContent = computed(() => {
             <label
                 class="absolute bg-white px-1 transition-all duration-100"
                 :class="{
-                    'top-2': !(focused || hasContent),
+                    'top-2 text-slate-600': !(focused || hasContent),
                     '-top-[10px] text-xs font-bold': focused || hasContent
                 }"
                 :for="inputId"

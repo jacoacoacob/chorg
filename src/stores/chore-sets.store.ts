@@ -34,10 +34,20 @@ const useChoreSets = defineStore("chore-sets", () => {
     }
   }
 
-  async function createChoreSet(displayName: string, groupId: string) {
+  async function createChoreSet(groupId: string, displayName?: string) {
     try {
-      await fetchCreateChoreSet(displayName, groupId);
+      const { id } = await fetchCreateChoreSet(groupId, displayName);
       await refreshChoreSetList();
+      return id;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async function updateChoreSet(choreSetId: string, displayName: string) {
+    try {
+      await fetchUpdateChoreSet({ id: choreSetId, display_name: displayName });
+      await refreshChoreSetDetail(choreSetId);
     } catch (error) {
       handleError(error);
     }
@@ -47,6 +57,7 @@ const useChoreSets = defineStore("chore-sets", () => {
     detail,
     list,
     createChoreSet,
+    updateChoreSet,
     refreshChoreSetDetail,
     refreshChoreSetList,
   };

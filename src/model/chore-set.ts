@@ -20,9 +20,9 @@ const fetchChoreSetDetail = makeFetcher(async (choreSetId: string) => supabase
 );
 
 const fetchCreateChoreSet = makeFetcher(
-  async (display_name: string, group_id: string) => supabase
+  async (group_id: string, display_name?: string) => supabase
     .from("chore_set")
-    .insert({ display_name, group_id })
+    .insert({ group_id, display_name: display_name ?? "" })
     .select()
     .single()
 );
@@ -31,6 +31,7 @@ const fetchUpdateChoreSet = makeFetcher(
   async ({ id, ...options }: UpdateChoreSetOptions) => supabase
     .from("chore_set")
     .update(options)
+    .eq("id", id)
     .select()
     .single()
 );
