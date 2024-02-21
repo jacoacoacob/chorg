@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, isRef } from "vue";
 import { useRoute } from "vue-router";
 import type { Breadcrumb } from "@/router";
 
+const route = useRoute();
+
 const breadcrumbs = computed(() => {
-  const route = useRoute();
-  
   if (route.meta.breadcrumbs) {
     return (route.meta.breadcrumbs as Breadcrumb[]).map((crumb) => ({
-      text: typeof crumb.text === "function" ? crumb.text(route) : crumb.text,
+      text: isRef(crumb.text) ? crumb.text.value(route) : crumb.text,
       to: typeof crumb.to === "function" ? crumb.to(route) : crumb.to,
     }));
   }

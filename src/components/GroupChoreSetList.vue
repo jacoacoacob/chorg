@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-
+import ChoreSetUpdate from "./ChoreSetUpdate.vue";
 import GroupChoreSetListItem from "@/components/GroupChoreSetListItem.vue";
 import { useChoreSets } from "@/stores/chore-sets.store";
 import { useGroups } from "@/stores/groups.store";
@@ -8,10 +8,8 @@ import { useProvideRef } from "@/composables/use-provide-inject-ref";
 
 const { groupId } = defineProps<{ groupId: string }>();
 
-const groups = useGroups();
 const choreSets = useChoreSets();
 
-const group = computed(() => groups.detail[groupId]);
 const groupChoreSets = computed(() => choreSets
   .list
   .filter((choreSet) => choreSet.group_id === groupId)
@@ -20,10 +18,11 @@ const groupChoreSets = computed(() => choreSets
 
 const shouldFocus = useProvideRef<string | null>("shouldFocus", null);
 
+const editChoreSetId = ref<string>();
+
 async function createChoreSet() {
   try {
-    const choreSetId = await choreSets.createChoreSet(groupId);
-    shouldFocus.value = choreSetId;
+    editChoreSetId.value = await choreSets.createChoreSet(groupId);
   } catch (error) {
     console.error(error);
   }
@@ -41,9 +40,14 @@ onMounted(async () => {
       <button @click="createChoreSet">Add chore set</button>
     </div>
     <ul class="space-y-4">
-      <li v-for="{ display_name, id } in groupChoreSets" :key="id">
-        <GroupChoreSetListItem :id="id" />
-      </li>
+      <GroupChoreSetListItem
+        v-for="choreSet in groupChoreSets"
+        :key="choreSet.id"
+        :choreSetId="choreSet.id"
+        @edit="editChoreSetId = choreSet.id"
+      />
     </ul>
   </div>
-</template>@/composables/use-provide-inject-ref
+
+  <ChoreSetUpdate :choreSetId="editChoreSetId" @close="editChoreSetId = undefined" />
+</template>

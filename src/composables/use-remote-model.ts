@@ -2,17 +2,19 @@
 import { ref, watch, nextTick, type Ref } from "vue";
 
 function useSyncRemote<T>(
-  init: () => T,
+  data: () => T,
   sync: (value: T) => Promise<void>,
   delay = 250
 ) {
-  const data = ref<T>();
+  const _data = ref<T>();
+
+  const _error = ref<string>();
 
   let initialized = false;
 
   let handle: NodeJS.Timeout;
   
-  watch(data, (data) => {
+  watch(_data, (data) => {
     if (!initialized) {
       return;
     }
@@ -21,16 +23,21 @@ function useSyncRemote<T>(
 
     handle = setTimeout(async () => {
       if (handle) {
-        console.log("sync")
-        await sync(data as T);
+        try {
+          _error.value = undefined;
+          await sync(data as T);
+        } catch (error) {
+          _error.value = (error as any).message
+        }
       }
     }, delay);
   });
 
   return {
-    data: data as Ref<T>,
+    error: _error,
+    data: _data as Ref<T>,
     init() {
-      (data.value as any) = init();
+      (_data.value as any) = data();
       nextTick(() => {
         initialized = true;
       });

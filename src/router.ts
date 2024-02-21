@@ -1,3 +1,4 @@
+import { computed } from "vue";
 import { createRouter, createWebHistory, useRoute, type NavigationGuardNext, type RouteLocationNormalized } from "vue-router"
 import Home from "@/views/home.vue";
 import NotFound from "@/views/not-found.vue";
@@ -8,13 +9,13 @@ import DashboardNotFond from "@/views/dashboard/not-found.vue";
 import GroupList from "@/views/dashboard/group-list.vue";
 import GroupDetail from "@/views/dashboard/group-detail.vue";
 import ChoreList from "@/views/dashboard/chore-list.vue";
-import ChoreSetList from "@/views/dashboard/chore-set-list.vue";
 import ChoreTaskList from "@/views/dashboard/chore-task-list.vue";
 import Account from "@/views/dashboard/account.vue";
 
 import { useAuth } from "@/stores/auth.store";
 import { assertAuthenticated } from "./utils/assert-authenticated";
 import { useGroups } from "./stores/groups.store";
+import type { ComputedRef } from "vue";
 
 function requireAuthenticated(
     _to: RouteLocationNormalized,
@@ -31,7 +32,7 @@ function requireAuthenticated(
 
 interface Breadcrumb {
     to?: ((route: RouteLocationNormalized) => RouteLocationNormalized) | RouteLocationNormalized;
-    text: ((route: RouteLocationNormalized) => string) | string;
+    text: ComputedRef<(route: RouteLocationNormalized) => string> | string;
 }
 
 const router = createRouter({
@@ -95,11 +96,16 @@ const router = createRouter({
                                 to: { name: "group-list" },
                             },
                             {
-                                text: (route) => {
+                                text: computed(() => (route) => {
                                     const groups = useGroups();
                                     const group = groups.groupList.find((group) => group.id === route.params.id);
                                     return group?.display_name ?? "";
-                                },
+                                }),
+                                // text: (route) => computed(() => {
+                                //     const groups = useGroups();
+                                //     const group = groups.groupList.find((group) => group.id === route.params.id);
+                                //     return group?.display_name ?? "";
+                                // }),
                             }
                         ] as Breadcrumb[],
                     },
@@ -108,12 +114,6 @@ const router = createRouter({
                     path: "chores",
                     name: "chore-list",
                     component: ChoreList,
-                    beforeEnter: requireAuthenticated,
-                },
-                {
-                    path: "chore-sets",
-                    name: "chore-set-list",
-                    component: ChoreSetList,
                     beforeEnter: requireAuthenticated,
                 },
                 {

@@ -3,7 +3,6 @@ import { computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
 import GroupChoreSetList from "@/components/GroupChoreSetList.vue";
-import CreateChoreSet from "@/components/CreateChoreSet.vue";
 import { useGroups } from "@/stores/groups.store";
 import { useDisclosures } from "@/stores/disclosures.store";
 import { useChoreSets } from "@/stores/chore-sets.store";
@@ -46,8 +45,6 @@ onMounted(async () => {
     </div>
 
     <GroupChoreSetList :groupId="($route.params.id as string)" />
-
-    <CreateChoreSet :groupId="group?.id" />
 
   </div>
 </template>@/composables/use-provide-inject-ref

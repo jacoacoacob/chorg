@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed, useAttrs, watch, type Ref } from "vue";
+import { onMounted, ref, computed, useAttrs, watch, type Ref, nextTick } from "vue";
 import { randId } from "@/utils/rand";
 
 defineOptions({
@@ -13,14 +13,16 @@ const props = defineProps<{
     shouldFocus?: boolean;
     label?: string;
     helpText?: string;
+    errorText?: string;
 }>();
 
 const emit = defineEmits(["update:modelValue"]);
 
 const inputRef = ref<HTMLInputElement>();
 
-watch(() => props.shouldFocus, (shouldFocus) => {
+watch(() => props.shouldFocus, async (shouldFocus) => {
     if (shouldFocus) {
+        await nextTick();
         inputRef.value?.focus();
     }
 }, { immediate: true });
@@ -71,8 +73,14 @@ const hasContent = computed(() => {
                 @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
             />
         </div>
-        <p v-if="helpText" class="text-slate-600 text-xs px-0.5">
-            {{ helpText }}
+        <p
+            v-if="errorText || helpText"
+            class="text-slate-600 text-xs px-0.5"
+            :class="{
+                'text-red-500': Boolean(errorText)
+            }"
+        >
+            {{ errorText || helpText }}
         </p>
     </div>
 </template>

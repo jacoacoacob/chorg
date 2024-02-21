@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 
 type ModalName =
   "create-chore" |
-  "create-chore-set"
+  "edit-chore-set"
   ;
 
 const useDisclosures = defineStore("disclosures", () => {
