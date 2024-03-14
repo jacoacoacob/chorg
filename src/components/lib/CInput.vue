@@ -10,6 +10,7 @@ const attrs = useAttrs();
 
 const props = defineProps<{
     modelValue: string | number | undefined;
+    fieldProps?: Record<string, any>;
     shouldFocus?: boolean;
     label?: string;
     helpText?: string;
@@ -63,7 +64,7 @@ const hasContent = computed(() => {
                 {{ label }}
             </label>
             <input
-                v-bind="$attrs"
+                v-bind="{ ...$attrs, ...fieldProps ?? {}}"
                 ref="inputRef"
                 class="outline-none bg-transparent w-full"
                 :id="inputId"
@@ -75,8 +76,9 @@ const hasContent = computed(() => {
         </div>
         <p
             v-if="errorText || helpText"
-            class="text-slate-600 text-xs px-0.5"
+            class=" text-xs px-0.5"
             :class="{
+                'text-slate-600': !Boolean(errorText),
                 'text-red-500': Boolean(errorText)
             }"
         >

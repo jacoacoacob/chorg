@@ -9,7 +9,6 @@ import DashboardNotFond from "@/views/dashboard/not-found.vue";
 import GroupList from "@/views/dashboard/group-list.vue";
 import GroupDetail from "@/views/dashboard/group-detail.vue";
 import ChoreList from "@/views/dashboard/chore-list.vue";
-import ChoreTaskList from "@/views/dashboard/chore-task-list.vue";
 import Account from "@/views/dashboard/account.vue";
 
 import { useAuth } from "@/stores/auth.store";

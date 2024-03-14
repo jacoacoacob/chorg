@@ -1,56 +1,59 @@
 <script setup lang="ts">
-import CModal from "./lib/CModal.vue";
-import CInput from "./lib/CInput.vue";
-import { useForm } from "@/composables/use-form";
-import { useChoreSets } from "@/stores/chore-sets.store";
-import { useGroups } from "@/stores/groups.store";
+import { useForm } from "vee-validate";
+import { string, object } from "zod";
+import { toTypedSchema } from "@vee-validate/zod";
 
-defineEmits(["chore-set:created", "close"]);
+import CModal from "./lib/CModal.vue";
+import { useChoreSets } from "@/stores/chore-sets.store";
+import CInput from "./lib/CInput.vue";
+import { useDisclosures } from "@/stores/disclosures.store";
+
 
 const props = defineProps<{
   groupId: string;
-  isOpen: boolean;
 }>();
 
-const groups = useGroups();
+const disclosures = useDisclosures();
 const choreSets = useChoreSets();
 
-const form = useForm({ displayName: "" });
+const { handleSubmit, defineField, resetForm, setFieldError, errors } = useForm({
+  validationSchema: toTypedSchema(
+    object({
+      displayName: string().min(3, "Display Name must contain at least 3 characters"),
+    })
+  ),
+});
 
-const onSubmit = form.createSubmitHandler(
-  async (_, { displayName }) => {
-    try {
-      if (displayName.length < 3) {
-        throw new Error("Name must have 3 or more letters");
-      }
-      await choreSets.createChoreSet(displayName, props.groupId);
-      await groups.refreshGroupDetail(props.groupId);
-    } catch (error) {
-      return {
-        success: false,
-        message: typeof (error as any).message === "string"
-          ? (error as any).message
-          : "An unknown error occurred.",
-      }
-    }
+const [displayName, dispayNameProps] = defineField("displayName", {
+  props: (state) => ({
+    errorText: state.errors[0],
+    label: "Display Name",
+    helpText: "Give your Chore Set a descriptive name"
+  }),
+  validateOnModelUpdate: false,
+});
+
+const onSubmit = handleSubmit(async ({ displayName }) => {
+  try {
+    await choreSets.createChoreSet(props.groupId, displayName);
+    await choreSets.refreshChoreSetList();
+    closeModal();
+  } catch (error) {
+    setFieldError("displayName", (error as any).message);
   }
-);
+});
+
+function closeModal() {
+  resetForm();
+  disclosures.hideModal();
+}
 
 </script>
 
 <template>
-  <CModal :isOpen="isOpen" :onClose="() => $emit('close')" class="space-y-8">
-    <template #title>
-      Create a new Chore Set
-    </template>
+  <CModal :isOpen="disclosures.showModal === 'chore-set-create'" @close="closeModal">
     <form @submit="onSubmit">
-      <CInput
-        label="Name"
-        helpText="Create a descriptive name for your Chore Set"
-        :errorText="form.error.value"
-        v-model="form.fields.displayName"
-      />
-      <button>Save</button>
+      <CInput v-model="displayName" v-bind="dispayNameProps"  />
     </form>
   </CModal>
 </template>

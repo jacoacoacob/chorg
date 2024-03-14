@@ -5,9 +5,13 @@ import GroupChoreSetListItem from "@/components/GroupChoreSetListItem.vue";
 import { useChoreSets } from "@/stores/chore-sets.store";
 import { useGroups } from "@/stores/groups.store";
 import { useProvideRef } from "@/composables/use-provide-inject-ref";
+import ChoreCreate from "./ChoreCreate.vue";
+import ChoreSetCreate from "./ChoreSetCreate.vue";
+import { useDisclosures } from "@/stores/disclosures.store";
 
 const { groupId } = defineProps<{ groupId: string }>();
 
+const disclosures = useDisclosures();
 const choreSets = useChoreSets();
 
 const groupChoreSets = computed(() => choreSets
@@ -19,6 +23,7 @@ const groupChoreSets = computed(() => choreSets
 const shouldFocus = useProvideRef<string | null>("shouldFocus", null);
 
 const editChoreSetId = ref<string>();
+
 
 async function createChoreSet() {
   try {
@@ -37,7 +42,7 @@ onMounted(async () => {
   <div class="card">
     <div class="flex justify-between">
       <h3 class="card__title">Chore Sets</h3>
-      <button @click="createChoreSet">Add chore set</button>
+      <button @click="disclosures.showModal = 'chore-set-create'">Add chore set</button>
     </div>
     <ul class="space-y-4">
       <GroupChoreSetListItem
@@ -48,6 +53,6 @@ onMounted(async () => {
       />
     </ul>
   </div>
-
+  <ChoreSetCreate :groupId="groupId" />
   <ChoreSetUpdate :choreSetId="editChoreSetId" @close="editChoreSetId = undefined" />
 </template>

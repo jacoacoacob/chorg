@@ -17,7 +17,7 @@ defineProps<{
 
 <template>
     <TransitionRoot appear :show="isOpen" as="template">
-        <Dialog as="div" @close="onClose" class="relative z-10">
+        <Dialog as="div" @close="$emit('close')" class="relative z-10">
             <TransitionChild
                 as="template"
                 enter="duration-300 ease-out"
