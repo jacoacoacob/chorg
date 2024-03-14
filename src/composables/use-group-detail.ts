@@ -1,4 +1,4 @@
-import type { Ref } from "vue";
+import { unref, type Ref } from "vue";
 import { useQuery, type UseQueryReturnType } from "@tanstack/vue-query";
 import { supabase } from "@/supabase-client";
 import { makeFetcher } from "@/utils/fetcher";
@@ -29,25 +29,4 @@ function useGroupDetailQuery(groupId: Ref<string | undefined>) {
   });
 }
 
-function useGroupListQuery() {
-  return useQuery({
-    queryKey: ["group-list"],
-    queryFn: () => makeFetcher(
-      async () => supabase.from("group").select("*")
-    )(),
-  });
-}
-
-function useGroupUpdateMutation() {
-
-}
-
-function useGroupCreateMutation() {
-
-}
-
-function useGroupDeleteMutation() {
-  
-}
-
-export { useGroupDetailQuery, useGroupListQuery };
+export { useGroupDetailQuery };

@@ -9,8 +9,8 @@ import {
     fetchUpdateGroupDisplayName,
     type GroupDetail,
     type GroupList
-} from "@/model/group";
-import { fetchAddGroupMember, fetchRemoveGroupMember } from "@/model/group-member";
+} from "@/model.old/group";
+import { fetchAddGroupMember, fetchRemoveGroupMember } from "@/model.old/group-member";
 import { assertAuthenticated } from "@/utils/assert-authenticated";
 import { handleError } from "@/utils/handle-error";
 

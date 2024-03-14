@@ -1,29 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useQuery } from "@tanstack/vue-query";
-import { createModel } from "@/utils/create-model";
+import { useGroupDetailQuery, useGroupListQuery } from "@/model/group"
 
-const groupModel = createModel("group");
+const activeGroup = ref<string>();
 
-type Group = Awaited<ReturnType<typeof groupModel.findOne>>;
+const { data: groupList } = useGroupListQuery();
 
-const activeGroup = ref<Group["id"]>();
+const { data: groupDetail } = useGroupDetailQuery(activeGroup);
 
-const { data: groupList } = useQuery({
-  queryKey: ["group-list"],
-  queryFn: groupModel.findAll,
-});
-
-const { data: groupDetail } = useQuery({
-  staleTime: Infinity,
-  queryKey: ["group-detail", activeGroup],
-  queryFn: () => {
-    if (activeGroup.value) {
-      return groupModel.findOne(activeGroup.value);
-    }
-    return null;
-  },
-});
 </script>
 
 <template>

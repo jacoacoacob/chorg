@@ -9,7 +9,7 @@ import {
   fetchUpdateChoreSet,
   type ChoreSetDetail,
   type ChoreSetList,
-} from "@/model/chore-set";
+} from "@/model.old/chore-set";
 
 const useChoreSets = defineStore("chore-sets", () => {
   const detail = ref<Record<string, ChoreSetDetail>>({});
