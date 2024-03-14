@@ -7,7 +7,7 @@ const auth = useAuth();
 
 <template>
     <div class="flex items-center justify-center min-h-screen">
-        <RouterLink v-if="auth.user" :to="{ name: 'group-list' }">
+        <RouterLink v-if="auth.user" :to="{ name: 'dashboard' }">
             Dashboard
         </RouterLink>
         <RouterLink v-else :to="{ name: 'sign-in' }">

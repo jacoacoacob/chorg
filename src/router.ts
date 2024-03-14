@@ -1,19 +1,13 @@
-import { computed } from "vue";
-import { createRouter, createWebHistory, useRoute, type NavigationGuardNext, type RouteLocationNormalized } from "vue-router"
+
+import { createRouter, createWebHistory, type NavigationGuardNext, type RouteLocationNormalized } from "vue-router"
 import Home from "@/views/home.vue";
 import NotFound from "@/views/not-found.vue";
 import SignIn from "@/views/sign-in.vue";
 import SignUp from "@/views/sign-up.vue";
 import Dashboard from "@/views/dashboard.vue";
-import DashboardNotFond from "@/views/dashboard/not-found.vue";
-import GroupList from "@/views/dashboard/group-list.vue";
-import GroupDetail from "@/views/dashboard/group-detail.vue";
-import ChoreList from "@/views/dashboard/chore-list.vue";
-import Account from "@/views/dashboard/account.vue";
 
 import { useAuth } from "@/stores/auth.store";
 import { assertAuthenticated } from "./utils/assert-authenticated";
-import { useGroups } from "./stores/groups.store";
 import type { ComputedRef } from "vue";
 
 function requireAuthenticated(
@@ -68,71 +62,9 @@ const router = createRouter({
         },
         {
             path: "/dashboard",
+            name: "dashboard",
             component: Dashboard,
-            children: [
-                {
-                    path: "groups",
-                    name: "group-list",
-                    component: GroupList,
-                    beforeEnter: requireAuthenticated,
-                    meta: {
-                        breadcrumbs: [
-                            {
-                                text: "Groups"
-                            }
-                        ] as Breadcrumb[],
-                    },
-                },
-                {
-                    path: "groups/:id",
-                    name: "group-detail",
-                    component: GroupDetail,
-                    beforeEnter: requireAuthenticated,
-                    meta: {
-                        breadcrumbs: [
-                            {
-                                text: "Groups",
-                                to: { name: "group-list" },
-                            },
-                            {
-                                text: computed(() => (route) => {
-                                    const groups = useGroups();
-                                    const group = groups.groupList.find((group) => group.id === route.params.id);
-                                    return group?.display_name ?? "";
-                                }),
-                                // text: (route) => computed(() => {
-                                //     const groups = useGroups();
-                                //     const group = groups.groupList.find((group) => group.id === route.params.id);
-                                //     return group?.display_name ?? "";
-                                // }),
-                            }
-                        ] as Breadcrumb[],
-                    },
-                },
-                {
-                    path: "chores",
-                    name: "chore-list",
-                    component: ChoreList,
-                    beforeEnter: requireAuthenticated,
-                },
-                {
-                    path: "chore-tasks",
-                    name: "chore-task-list",
-                    component: ChoreTaskList,
-                    beforeEnter: requireAuthenticated,
-                },
-                {
-                    path: "account",
-                    name: "account",
-                    component: Account,
-                    beforeEnter: requireAuthenticated,
-                },
-                {
-                    path: ":pathMatch(.*)*",
-                    name: "dashboard-not-found",
-                    component: DashboardNotFond,
-                },
-            ]
+            beforeEnter: requireAuthenticated,
         },
         {
             path: "/:pathMatch(.*)*",
