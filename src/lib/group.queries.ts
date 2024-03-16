@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CreateGroupCols, UpdateGroupCols, fetchCreateGroup, fetchGroups, fetchUpdateGroup } from "./group.fetchers";
-import type { Supabase } from "./supabase/utils.types";
 import { supabase } from "./supabase/client";
+import { useInvalidateQueries } from "./utils";
 
 const GROUPS = "groups";
 
@@ -13,23 +13,19 @@ function useGroups() {
 }
 
 function useCreateGroup() {
-  const queryClient = useQueryClient();
+  const onSuccess = useInvalidateQueries([GROUPS]);
 
   return useMutation({
     mutationFn: (columns: CreateGroupCols) => fetchCreateGroup(
       supabase,
       columns
     ),
-    onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: [GROUPS]
-      })
-    },
+    onSuccess,
   });
 }
 
 function useUpdateGroup(groupId: string) {
-  const queryClient = useQueryClient();
+  const onSuccess = useInvalidateQueries([GROUPS]);
 
   return useMutation({
     mutationFn: (columns: UpdateGroupCols) => fetchUpdateGroup(
@@ -37,11 +33,7 @@ function useUpdateGroup(groupId: string) {
       groupId,
       columns
     ),
-    onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: [GROUPS]
-      })
-    },
+    onSuccess,
   });
 }
 

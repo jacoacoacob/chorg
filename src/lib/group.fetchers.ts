@@ -1,5 +1,5 @@
 import { handleFetch } from "./supabase/handle-fetch";
-import type { Supabase, TableRow } from "./supabase/utils.types";
+import type { Supabase, TableRow } from "./supabase/utils.type";
 
 function fetchGroups(client: Supabase) {
   return handleFetch(
