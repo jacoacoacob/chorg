@@ -5,6 +5,7 @@ import NotFound from "@/views/not-found.vue";
 import SignIn from "@/views/sign-in.vue";
 import SignUp from "@/views/sign-up.vue";
 import Dashboard from "@/views/dashboard.vue";
+import DashboardGroup from "@/views/dashboard-group.vue";
 
 import { useAuth } from "@/stores/auth.store";
 import { assertAuthenticated } from "./utils/assert-authenticated";
@@ -61,10 +62,18 @@ const router = createRouter({
             }
         },
         {
+
             path: "/dashboard",
             name: "dashboard",
             component: Dashboard,
             beforeEnter: requireAuthenticated,
+            children: [
+                {
+                    path: ":groupId",
+                    name: "group",
+                    component: DashboardGroup
+                }
+            ]
         },
         {
             path: "/:pathMatch(.*)*",

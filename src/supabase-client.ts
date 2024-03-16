@@ -3,7 +3,10 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./supabase-types";
 
 type TableName = keyof Database["public"]["Tables"];
-type Table<T extends TableName> = Database["public"]["Tables"][T]["Row"];
+type TableRow<T extends TableName> = Database["public"]["Tables"][T]["Row"];
+type UpdateTableRow<T extends TableName> = Database["public"]["Tables"][T]["Insert"];
+type CreateTableRow<T extends TableName> = Database["public"]["Tables"][T]["Update"];
+type TableRowRelationships<T extends TableName> = Database["public"]["Tables"][T]["Relationships"];
 
 const supabase = createClient<Database>(
     import.meta.env.VITE_SUPABASE_URL,
@@ -11,4 +14,4 @@ const supabase = createClient<Database>(
 );
 
 export { supabase };
-export type { Database, Table, TableName }
+export type { Database, TableRow, CreateTableRow, UpdateTableRow, TableName, TableRowRelationships };

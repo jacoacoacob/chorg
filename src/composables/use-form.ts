@@ -46,7 +46,7 @@ function useForm<
                 ev.preventDefault();
                 reset();
                 status.value = "busy";
-                const result = await onSubmit(ev, reactiveFields);
+                const result = await onSubmit(ev, reactiveFields as any);
                 status.value = "done";
                 success.value = result?.success ?? true;
                 data.value = result?.data;

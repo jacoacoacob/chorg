@@ -29,7 +29,8 @@ const fetchCreateChore = makeFetcher(
     .from("chore")
     .insert({
       title,
-      description
+      description,
+      chore_set_id: "",
     })
     .select()
     .single()
