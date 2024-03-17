@@ -3,10 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { createServerClient } from "@/lib/supabase/server-client";
+import { createServerSupabaseClient } from "@/lib/supabase/server-client";
 
 async function login(formData: FormData) {
-  const supabase = createServerClient();
+  const supabase = createServerSupabaseClient();
 
   const { error } = await supabase.auth.signInWithPassword({
     email: formData.get("email") as string,
@@ -23,7 +23,7 @@ async function login(formData: FormData) {
 }
 
 async function signup(formData: FormData) {
-  const supabase = createServerClient();
+  const supabase = createServerSupabaseClient();
 
   const { error } = await supabase.auth.signUp({
     email: formData.get("email") as string,
