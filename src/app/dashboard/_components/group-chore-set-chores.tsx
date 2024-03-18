@@ -67,8 +67,8 @@ function GroupChoreSetChores({ chores }: Props) {
   );
 
   return (
-    <div>
-      <h3>Chores</h3>
+    <div className="">
+      <h2 className="font-bold">Chores</h2>
       <Table removeWrapper aria-label="Chores">
         <TableHeader columns={columns}>
           {(column) =>

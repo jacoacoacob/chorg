@@ -1,15 +1,15 @@
 import { IconChevronRight } from "@/components/icon-chevron-right";
-import { useChoreSets } from "@/lib/chore-set.queries";
+import { useGroupChoreSets } from "@/lib/chore-set.queries";
 import { Listbox, ListboxItem, type Selection } from "@nextui-org/react";
 import React from "react";
-import { GroupChoreSet } from "./group-chore-set";
+import { GroupChoreSetChores } from "./group-chore-set-chores";
 
 interface Props {
   groupId: string;
 }
 
 function GroupChoreSets({ groupId }: Props) {
-  const { data: choreSets } = useChoreSets(groupId);
+  const { data: choreSets } = useGroupChoreSets(groupId);
 
   const [selected, setSelected] = React.useState<Selection>(new Set());
 
@@ -24,7 +24,7 @@ function GroupChoreSets({ groupId }: Props) {
   return (
     <div className="flex">
       <div>
-        <h3>Chore Sets</h3>
+        <h2 className="font-bold">Chore Sets</h2>
         <Listbox
           aria-label="Chore Sets"
           selectionMode="single"
@@ -48,7 +48,7 @@ function GroupChoreSets({ groupId }: Props) {
           )}
         </Listbox>
       </div>
-      {selectedChoreSet && <GroupChoreSet {...selectedChoreSet} />}
+      {selectedChoreSet && <GroupChoreSetChores chores={selectedChoreSet.chores} />}
     </div>
   )
 }

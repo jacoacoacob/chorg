@@ -12,15 +12,19 @@ async function fetchIsGroupDisplayNameAvailable(client: Supabase, display_name: 
   return data === null;
 }
 
+function fetchGroup(client: Supabase, groupId: string) {
+  return handleFetch(async () => client
+    .from("group")
+    .select("*")
+    .eq("id", groupId)
+    .maybeSingle()
+  );
+}
+
 type Groups = Awaited<ReturnType<typeof fetchGroups>>;
 
 function fetchGroups(client: Supabase) {
-  return handleFetch(
-    async () => client.from("group").select(`
-      *,
-      members:user_profile(*)
-    `)
-  );
+  return handleFetch(async () => client.from("group").select("*"));
 }
 
 type CreateGroupCols = Pick<TableRow<"group">, "display_name">;
@@ -39,5 +43,5 @@ function fetchUpdateGroup(client: Supabase, groupId: string, columns: UpdateGrou
   );
 }
 
-export { fetchGroups, fetchCreateGroup, fetchUpdateGroup, fetchIsGroupDisplayNameAvailable };
+export { fetchGroup, fetchGroups, fetchCreateGroup, fetchUpdateGroup, fetchIsGroupDisplayNameAvailable };
 export type { Groups, CreateGroupCols, UpdateGroupCols };

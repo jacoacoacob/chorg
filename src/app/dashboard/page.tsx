@@ -1,10 +1,10 @@
 
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
-import { GroupsList } from "./_components/groups-list";
 import { assertServerAuthenticated } from "@/lib/assert-server-authenticated";
 import { fetchGroups } from "@/lib/group.fetchers";
+import { QueryKeyValue } from "@/lib/utils";
 import { createServerSupabaseClient } from "@/lib/supabase/server-client";
-import { Groups } from "./_components/groups";
+import { UserDashboardContent } from "./user-dashboard-content";
 
 export default async function DashboardPage() {
   
@@ -13,15 +13,13 @@ export default async function DashboardPage() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["groups"],
+    queryKey: [QueryKeyValue.GROUPS],
     queryFn: () => fetchGroups(createServerSupabaseClient()),
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <main>
-        <Groups />
-      </main>
+      <UserDashboardContent />
     </HydrationBoundary>
   );
 }

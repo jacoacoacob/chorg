@@ -1,19 +1,24 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CreateChoreSetCols, UpdateChoreSetCols, fetchChoreSets, fetchCreateChoreSet, fetchUpdateChoreSet } from "./chore-set.fetchers";
+import { CreateChoreSetCols, UpdateChoreSetCols, fetchGroupChoreSets, fetchCreateChoreSet, fetchUpdateChoreSet, fetchChoreSet } from "./chore-set.fetchers";
 import { supabase } from "./supabase/client";
-import { useInvalidateQueries } from "./utils";
+import { useInvalidateQueries, QueryKeyValue } from "./utils";
 
-const CHORE_SETS = "chore-sets";
-
-function useChoreSets(groupId: string) {
+function useChoreSet(choreSetId: string) {
   return useQuery({
-    queryKey: [CHORE_SETS, groupId],
-    queryFn: () => fetchChoreSets(supabase, groupId),
+    queryKey: [QueryKeyValue.CHORE_SET, choreSetId],
+    queryFn: () => fetchChoreSet(supabase, choreSetId),   
+  });
+}
+
+function useGroupChoreSets(groupId: string) {
+  return useQuery({
+    queryKey: [QueryKeyValue.GROUP_CHORE_SETS, groupId],
+    queryFn: () => fetchGroupChoreSets(supabase, groupId),
   });
 }
 
 function useCreateChoreSet(groupId: string) {
-  const onSuccess = useInvalidateQueries([CHORE_SETS, groupId]);
+  const onSuccess = useInvalidateQueries([QueryKeyValue.GROUP_CHORE_SETS, groupId]);
 
   return useMutation({
     mutationFn: (columns: CreateChoreSetCols) => fetchCreateChoreSet(
@@ -25,7 +30,7 @@ function useCreateChoreSet(groupId: string) {
 }
 
 function useUpdateChoreSet(groupId: string) {
-  const onSuccess = useInvalidateQueries([CHORE_SETS, groupId]);
+  const onSuccess = useInvalidateQueries([QueryKeyValue.GROUP_CHORE_SETS, groupId]);
 
   return useMutation({
     mutationFn: (columns: UpdateChoreSetCols) => fetchUpdateChoreSet(
@@ -36,4 +41,4 @@ function useUpdateChoreSet(groupId: string) {
   })
 }
 
-export { useChoreSets, useCreateChoreSet, useUpdateChoreSet };
+export { useChoreSet, useGroupChoreSets, useCreateChoreSet, useUpdateChoreSet };

@@ -1,5 +1,12 @@
 import { useQueryClient, type QueryKey } from "@tanstack/react-query";
 
+enum QueryKeyValue {
+  GROUP = "group",
+  GROUPS = "groups",
+  GROUP_CHORE_SETS = "group-chore-sets",
+  CHORE_SET = "chore-set",
+}
+
 function useInvalidateQueries(queryKey: QueryKey) {
   const queryClient = useQueryClient();
 
@@ -8,4 +15,4 @@ function useInvalidateQueries(queryKey: QueryKey) {
   }
 }
 
-export { useInvalidateQueries };
+export { useInvalidateQueries, QueryKeyValue };
