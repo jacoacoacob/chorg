@@ -8,12 +8,15 @@ import {
   ModalHeader,
   useDisclosure
 } from "@nextui-org/react";
-import { useForm, Controller, type SubmitHandler } from "react-hook-form";
+import { useForm, Controller, type SubmitHandler, UseFormReturn } from "react-hook-form";
 import { useCreateGroup } from "@/lib/group.queries";
+import { fetchIsGroupDisplayNameAvailable } from "@/lib/group.fetchers";
+import { supabase } from "@/lib/supabase/client";
 
 interface FormValues {
   display_name: string;
 }
+
 
 function GroupsAdd() {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
@@ -26,10 +29,9 @@ function GroupsAdd() {
   });
 
   const closeModal = React.useCallback(() => {
-    console.log("[closeModal]")
     reset();
     onClose();
-  }, []);
+  }, [onClose, reset]);
 
   const onSubmit: SubmitHandler<FormValues> = React.useCallback(
     async ({ display_name }) => {
@@ -40,7 +42,7 @@ function GroupsAdd() {
         console.warn("[GroupsAdd.onSubmit]", error);
       }
     },
-    []
+    [closeModal, createGroup]
   );
 
   return (
@@ -48,7 +50,7 @@ function GroupsAdd() {
       <Button onPress={onOpen}>Add Group</Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
-          {(onClose) =>
+          {() =>
             <>
               <ModalHeader className="flex flex-col gap-1">
                 Add Group
@@ -59,6 +61,12 @@ function GroupsAdd() {
                     name="display_name"
                     control={control}
                     rules={{
+                      validate: {
+                        displayNameAvailable: async (value) => {
+                          const isAvailable = await fetchIsGroupDisplayNameAvailable(supabase, value);
+                          return isAvailable|| `The name "${value}" has already been taken.`;
+                        },
+                      },
                       required: "Display Name is required",
                       minLength: {
                         value: 3,

@@ -1,5 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CreateGroupCols, UpdateGroupCols, fetchCreateGroup, fetchGroups, fetchUpdateGroup } from "./group.fetchers";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  fetchCreateGroup,
+  fetchGroups,
+  fetchUpdateGroup,
+  type CreateGroupCols,
+  type UpdateGroupCols,
+} from "./group.fetchers";
 import { supabase } from "./supabase/client";
 import { useInvalidateQueries } from "./utils";
 

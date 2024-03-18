@@ -1,9 +1,25 @@
 import { handleFetch } from "./supabase/handle-fetch";
 import type { Supabase, TableRow } from "./supabase/utils.type";
 
+async function fetchIsGroupDisplayNameAvailable(client: Supabase, display_name: string) {
+  const data = await handleFetch(
+    async () => client
+      .from("group")
+      .select("display_name")
+      .eq("display_name", display_name)
+      .maybeSingle()
+  );
+  return data === null;
+}
+
+type Groups = Awaited<ReturnType<typeof fetchGroups>>;
+
 function fetchGroups(client: Supabase) {
   return handleFetch(
-    async () => client.from("group").select("*")
+    async () => client.from("group").select(`
+      *,
+      members:user_profile(*)
+    `)
   );
 }
 
@@ -23,5 +39,5 @@ function fetchUpdateGroup(client: Supabase, groupId: string, columns: UpdateGrou
   );
 }
 
-export { fetchGroups, fetchCreateGroup, fetchUpdateGroup };
-export type { CreateGroupCols, UpdateGroupCols };
+export { fetchGroups, fetchCreateGroup, fetchUpdateGroup, fetchIsGroupDisplayNameAvailable };
+export type { Groups, CreateGroupCols, UpdateGroupCols };
