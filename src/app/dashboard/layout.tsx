@@ -4,7 +4,8 @@ import { assertServerAuthenticated } from "@/lib/assert-server-authenticated";
 import { fetchGroups } from "@/lib/group.fetchers";
 import { QueryKeyValue } from "@/lib/utils";
 import { createServerSupabaseClient } from "@/lib/supabase/server-client";
-import { DashboardNav } from "./dashboard-nav";
+import { DashboardSideNav } from "./dashboard-side-nav";
+import { DashboardNavbar } from "./dashboard-navbar";
 
 async function GroupDetailLayout({ children }: { children: React.ReactNode }) {
 
@@ -19,8 +20,9 @@ async function GroupDetailLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="flex min-h-screen">
-        <DashboardNav />
+      <DashboardNavbar />
+      <div className="flex min-h-[calc(100vh-60px)]">
+        <DashboardSideNav />
         <div>
           {children}
         </div>

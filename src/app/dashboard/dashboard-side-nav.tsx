@@ -5,7 +5,7 @@ import { useGroups } from "@/lib/group.queries";
 import { Listbox, ListboxItem, Link, ListboxSection } from "@nextui-org/react";
 import { useParams, usePathname } from "next/navigation";
 
-function DashboardNav() {
+function DashboardSideNav() {
   const { data: groups } = useGroups();
 
   const pathname = usePathname();
@@ -47,7 +47,6 @@ function DashboardNav() {
               key={route.href}
               href={route.href}
               variant="flat"
-              // variant={route.isActive ? "faded" : "light"}
               className={`border border-transparent ${route.isActive ? "border-slate-400" : ""}`}
             >
               {route.label}
@@ -59,4 +58,4 @@ function DashboardNav() {
   );
 }
 
-export { DashboardNav };
+export { DashboardSideNav };
