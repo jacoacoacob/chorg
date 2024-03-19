@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
-// import { NextUIProvider } from "@nextui-org/react";
+import { NextUIProvider } from "@nextui-org/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useRouter } from "next/navigation";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -37,14 +38,15 @@ interface Props {
 
 function Providers({ children }: Props) {
   const queryClient = getQueryClient();
+  const router = useRouter();
 
   return (
-    // <NextUIProvider>
+    <NextUIProvider navigate={router.push}>
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
         {children}
       </QueryClientProvider>
-    // </NextUIProvider>
+    </NextUIProvider>
   )
 }
 

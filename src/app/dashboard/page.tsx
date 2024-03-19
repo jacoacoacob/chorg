@@ -1,25 +1,18 @@
+"use client";
 
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
-import { assertServerAuthenticated } from "@/lib/assert-server-authenticated";
-import { fetchGroups } from "@/lib/group.fetchers";
-import { QueryKeyValue } from "@/lib/utils";
-import { createServerSupabaseClient } from "@/lib/supabase/server-client";
-import { UserDashboardContent } from "./user-dashboard-content";
+import { useGroups } from "@/lib/group.queries";
+import { Listbox, ListboxItem, Link } from "@nextui-org/react";
 
-export default async function DashboardPage() {
-  
-  await assertServerAuthenticated();
+function DashboardPage() {
 
-  const queryClient = new QueryClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: [QueryKeyValue.GROUPS],
-    queryFn: () => fetchGroups(createServerSupabaseClient()),
-  });
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <UserDashboardContent />
-    </HydrationBoundary>
+    <div>
+      <h1>
+
+      </h1>
+    </div>
   );
 }
+
+export default DashboardPage;
