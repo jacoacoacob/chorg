@@ -4,13 +4,17 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { createServerSupabaseClient } from "@/lib/supabase/server-client";
+import type { LoginFormFields } from "./login-form";
+import type { SignupFormFields } from "./signup-form";
 
-async function login(formData: FormData) {
+async function login(fields: LoginFormFields) {
+  const { email, password } = fields;
+
   const supabase = createServerSupabaseClient();
 
   const { error } = await supabase.auth.signInWithPassword({
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
+    email,
+    password,
   });
 
   if (error) {
@@ -22,17 +26,19 @@ async function login(formData: FormData) {
   redirect("/dashboard");
 }
 
-async function signup(formData: FormData) {
+async function signup(fields: SignupFormFields) {
+  const { username, email, password } = fields;
+
   const supabase = createServerSupabaseClient();
 
   const { error } = await supabase.auth.signUp({
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
+    email,
+    password,
     options: {
       data: {
-          username: formData.get("username") as string,
+          username,
       },
-  },
+    },
   });
 
   if (error) {

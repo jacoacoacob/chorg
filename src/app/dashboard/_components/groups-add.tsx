@@ -17,7 +17,6 @@ interface FormValues {
   display_name: string;
 }
 
-
 function GroupsAdd() {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const { mutateAsync: createGroup } = useCreateGroup();
