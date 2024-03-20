@@ -1,9 +1,12 @@
-import { IconChevronRight } from "@/components/icon-chevron-right";
-import { useGroupChoreSets } from "@/lib/chore-set.queries";
-import { Button, Listbox, ListboxItem, ListboxSection, type Selection } from "@nextui-org/react";
 import React from "react";
+import { Button, Listbox, ListboxItem, ListboxSection, divider, type Selection } from "@nextui-org/react";
+import type { PressEvent } from "@react-types/shared/src/events"
+import { IconPencil } from "@/components/icon-pencil";
+import { IconTrash } from "@/components/icon-trash";
+import { useDeleteChoreSet, useGroupChoreSets } from "@/lib/chore-set.queries";
 import { GroupChoreSetChores } from "./group-chore-set-chores";
 import { CreateChoreSet } from "./create-chore-set";
+import { ChoreSets } from "@/lib/chore-set.fetchers";
 
 interface Props {
   groupId: string;
@@ -13,14 +16,39 @@ function GroupChoreSets({ groupId }: Props) {
   const { data: choreSets } = useGroupChoreSets(groupId);
 
   const [selected, setSelected] = React.useState<Selection>(new Set());
+  const [editingChoreSet, setEditingChoreSet] = React.useState<string>();
+
+  const deleteChoreSet = useDeleteChoreSet(groupId);
 
   const selectedChoreSet = React.useMemo(
     () => {
       const selectedId = Array.from((selected as Set<string>).keys() || [])[0];
-      return choreSets?.find((choreSet) => choreSet.id === selectedId)
+      return choreSets?.find((choreSet) => choreSet.id === selectedId);
     },
     [choreSets, selected]
   );
+
+
+  const initiateEdit = React.useCallback(
+    (choreSetId: string) => {
+
+    },
+    []
+  );
+
+
+  const onDelete = React.useCallback((choreSet: ChoreSets[number]) => {
+    const message = `
+Are you sure you want to delete the Chore Set "${choreSet.display_name}"?
+
+All data associated with it will be deleted.
+
+THIS ACTION CANNOT BE UNDONE.
+    `;
+    if (confirm(message)) {
+      deleteChoreSet.mutate(choreSet.id); 
+    }
+  }, [deleteChoreSet]);
 
   return (
     <div className="flex">
@@ -36,16 +64,34 @@ function GroupChoreSets({ groupId }: Props) {
           <ListboxSection>
             {(choreSets || []).map((choreSet) =>
               <ListboxItem
+                hideSelectedIcon
                 variant="faded"
                 key={choreSet.id}
-                className={selectedChoreSet?.id === choreSet.id ? "border-zinc-400" : ""}
-                selectedIcon={({ isSelected }) =>
-                  <IconChevronRight
-                    className={`w-5 h-5 -translate-y-1 transition duration-75 ${isSelected ? "font-bold" : "rotate-90 text-slate-400"}`}
-                  />
+                className={`voh-parent ${selectedChoreSet?.id === choreSet.id ? "border-zinc-400" : ""}`}
+                endContent={
+                  <div className="flex voh-child">
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      variant="light"
+                      className="hover:text-emerald-500"
+                      onPress={() => setEditingChoreSet(choreSet.id)}
+                    >
+                      <IconPencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      variant="light"
+                      className="hover:text-red-500"
+                      onPress={() => onDelete(choreSet)}
+                    >
+                      <IconTrash className="h-4 w-4" />
+                    </Button>
+                  </div>
                 }
               >
-                {choreSet.display_name} 
+                {choreSet.display_name}
               </ListboxItem>
             )}
           </ListboxSection>
@@ -53,6 +99,7 @@ function GroupChoreSets({ groupId }: Props) {
         <CreateChoreSet />
       </div>
       {selectedChoreSet && <GroupChoreSetChores chores={selectedChoreSet.chores} />}
+      {editingChoreSet && <div>This the modal {editingChoreSet}</div>}
     </div>
   )
 }

@@ -4,8 +4,8 @@ import { assertServerAuthenticated } from "@/lib/assert-server-authenticated";
 import { fetchGroups } from "@/lib/group.fetchers";
 import { QueryKeyValue } from "@/lib/utils";
 import { createServerSupabaseClient } from "@/lib/supabase/server-client";
-import { DashboardSideNav } from "./dashboard-side-nav";
-import { DashboardNavbar } from "./dashboard-navbar";
+import { DashboardSideNav } from "./dashboard-layout-side-nav";
+import { DashboardNavbar } from "./dashboard-layout-navbar";
 
 async function GroupDetailLayout({ children }: { children: React.ReactNode }) {
 

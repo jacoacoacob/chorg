@@ -1,5 +1,5 @@
 import { handleFetch } from "./supabase/handle-fetch";
-import type { Supabase, TableRow } from "./supabase/utils.type";
+import type { Supabase, TableRow } from "./supabase/utils";
 
 async function fetchIsGroupDisplayNameAvailable(client: Supabase, display_name: string) {
   const data = await handleFetch(
@@ -31,7 +31,7 @@ type CreateGroupCols = Pick<TableRow<"group">, "display_name">;
 
 function fetchCreateGroup(client: Supabase, columns: CreateGroupCols) {
   return handleFetch(
-    async () => client.from("group").insert(columns)
+    async () => client.from("group").insert(columns).select().single()
   );
 }
 

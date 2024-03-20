@@ -1,5 +1,5 @@
 import { handleFetch } from "./supabase/handle-fetch";
-import type { Supabase, TableRow } from "./supabase/utils.type";
+import type { Supabase, TableRow } from "./supabase/utils";
 
 type ChoreSets = Awaited<ReturnType<typeof fetchGroupChoreSets>>;
 
@@ -42,5 +42,13 @@ function fetchUpdateChoreSet(client: Supabase, columns: UpdateChoreSetCols) {
   );
 }
 
-export { fetchChoreSet, fetchGroupChoreSets, fetchCreateChoreSet, fetchUpdateChoreSet };
+function fetchDeleteChoreSet(client: Supabase, choreSetId: string) {
+  return handleFetch(async () => client
+    .from("chore_set")
+    .delete()
+    .eq("id", choreSetId)
+  );
+}
+
+export { fetchChoreSet, fetchGroupChoreSets, fetchCreateChoreSet, fetchUpdateChoreSet, fetchDeleteChoreSet };
 export type { ChoreSets, CreateChoreSetCols, UpdateChoreSetCols };

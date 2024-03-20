@@ -1,15 +1,10 @@
 "use client";
 
+import { GroupsAdd } from "./_components/groups-add";
+
 function DashboardPage() {
   return (
-    <div>
-      <h1>
-        Dashboard!
-      </h1>
-      <p>
-        This is the dashboard.
-      </p>
-    </div>
+    <GroupsAdd />
   );
 }
 

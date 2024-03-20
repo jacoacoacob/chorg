@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS
     group_id UUID NOT NULL REFERENCES public.group ON DELETE CASCADE,
     owned_by UUID REFERENCES auth.users ON DELETE RESTRICT DEFAULT auth.uid (),
     display_name TEXT,
-    UNIQUE (id, display_name)
+    UNIQUE (group_id, display_name)
   );
 
 ALTER TABLE public.chore_set OWNER TO postgres;

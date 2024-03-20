@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Input, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from "@nextui-org/react";
 import { useParams } from "next/navigation";
 import { useCreateChoreSet } from "@/lib/chore-set.queries";
+import { ErrorCodeMessage, isPostgrestError } from "@/lib/supabase/utils";
 
 
 const schema = z.object({
@@ -19,9 +20,7 @@ function CreateChoreSet() {
 
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 
-  const createChoreSet = useCreateChoreSet(groupId);
-
-  const { control, handleSubmit, reset } = useForm<Schema>({
+  const { control, handleSubmit, reset, setError } = useForm<Schema>({
     resolver: zodResolver(schema),
     defaultValues: {
       display_name: "",
@@ -33,12 +32,23 @@ function CreateChoreSet() {
     onClose();
   }, [onClose, reset]);
 
+  const createChoreSet = useCreateChoreSet(groupId);
+
   const onSubmit: SubmitHandler<Schema> = React.useCallback(
     async ({ display_name }) => {
-      await createChoreSet.mutateAsync({ display_name });
-      closeModal();
+      try {
+        await createChoreSet.mutateAsync({ display_name });
+        closeModal();
+      } catch (error) {
+        if (isPostgrestError(error) && ErrorCodeMessage[error.code]) {
+          setError("display_name", {
+            message: ErrorCodeMessage[error.code]("", display_name),
+          });
+        }
+        setError("root", { message: "An unknown error occurred" });
+      }
     },
-    [closeModal, createChoreSet]
+    [closeModal, createChoreSet, setError]
   );
 
   return (

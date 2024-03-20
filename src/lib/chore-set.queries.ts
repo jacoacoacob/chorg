@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CreateChoreSetCols, UpdateChoreSetCols, fetchGroupChoreSets, fetchCreateChoreSet, fetchUpdateChoreSet, fetchChoreSet } from "./chore-set.fetchers";
+import { CreateChoreSetCols, UpdateChoreSetCols, fetchGroupChoreSets, fetchCreateChoreSet, fetchUpdateChoreSet, fetchChoreSet, ChoreSets, fetchDeleteChoreSet } from "./chore-set.fetchers";
 import { supabase } from "./supabase/client";
 import { useInvalidateQueries, QueryKeyValue } from "./utils";
+import { group } from "console";
 
 function useChoreSet(choreSetId: string) {
   return useQuery({
@@ -41,4 +42,16 @@ function useUpdateChoreSet(groupId: string) {
   })
 }
 
-export { useChoreSet, useGroupChoreSets, useCreateChoreSet, useUpdateChoreSet };
+function useDeleteChoreSet(groupId: string) {
+  const onSuccess = useInvalidateQueries([QueryKeyValue.GROUP_CHORE_SETS, groupId]);
+
+  return useMutation({
+    mutationFn: (choreSetId: string) => fetchDeleteChoreSet(
+      supabase,
+      choreSetId
+    ),
+    onSuccess
+  });
+}
+
+export { useChoreSet, useGroupChoreSets, useCreateChoreSet, useUpdateChoreSet, useDeleteChoreSet };

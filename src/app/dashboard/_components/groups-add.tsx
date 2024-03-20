@@ -12,6 +12,7 @@ import { useForm, Controller, type SubmitHandler, UseFormReturn } from "react-ho
 import { useCreateGroup } from "@/lib/group.queries";
 import { fetchIsGroupDisplayNameAvailable } from "@/lib/group.fetchers";
 import { supabase } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 interface FormValues {
   display_name: string;
@@ -20,6 +21,8 @@ interface FormValues {
 function GroupsAdd() {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const { mutateAsync: createGroup } = useCreateGroup();
+
+  const router = useRouter();
 
   const { handleSubmit, control, reset, formState: { errors } } = useForm<FormValues>({
     defaultValues: {
@@ -35,13 +38,14 @@ function GroupsAdd() {
   const onSubmit: SubmitHandler<FormValues> = React.useCallback(
     async ({ display_name }) => {
       try {
-        await createGroup({ display_name });
+        const { id: groupId } = await createGroup({ display_name });
+        router.push(`/dashboard/group/${groupId}`);
         closeModal();
       } catch (error) {
         console.warn("[GroupsAdd.onSubmit]", error);
       }
     },
-    [closeModal, createGroup]
+    [closeModal, createGroup, router]
   );
 
   return (
@@ -49,53 +53,49 @@ function GroupsAdd() {
       <Button onPress={onOpen}>Add Group</Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
-          {() =>
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Add Group
-              </ModalHeader>
-              <ModalBody>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                  <Controller
-                    name="display_name"
-                    control={control}
-                    rules={{
-                      validate: {
-                        displayNameAvailable: async (value) => {
-                          const isAvailable = await fetchIsGroupDisplayNameAvailable(supabase, value);
-                          return isAvailable|| `The name "${value}" has already been taken.`;
-                        },
-                      },
-                      required: "Display Name is required",
-                      minLength: {
-                        value: 3,
-                        message: "This should have 3 or more characters"
-                      },
-                    }}
-                    render={({ field }) =>
-                      <Input
-                        errorMessage={errors.display_name?.message}
-                        label="Group Name"
-                        description="Give your group a name"
-                        size="sm"
-                        {...field}
-                      />
-                    }
+          <ModalHeader className="flex flex-col gap-1">
+            Add Group
+          </ModalHeader>
+          <ModalBody>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <Controller
+                name="display_name"
+                control={control}
+                rules={{
+                  validate: {
+                    displayNameAvailable: async (value) => {
+                      const isAvailable = await fetchIsGroupDisplayNameAvailable(supabase, value);
+                      return isAvailable|| `The name "${value}" has already been taken.`;
+                    },
+                  },
+                  required: "Display Name is required",
+                  minLength: {
+                    value: 3,
+                    message: "This should have 3 or more characters"
+                  },
+                }}
+                render={({ field }) =>
+                  <Input
+                    errorMessage={errors.display_name?.message}
+                    label="Group Name"
+                    description="Give your group a name"
+                    size="sm"
+                    {...field}
                   />
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      radius="sm"
-                      variant="light"
-                      onPress={closeModal}
-                    >
-                      Cancel
-                    </Button>
-                    <Button radius="sm" color="primary" type="submit">Submit</Button>
-                  </div>
-                </form>
-              </ModalBody>
-            </>
-          }
+                }
+              />
+              <div className="flex justify-end gap-2">
+                <Button
+                  radius="sm"
+                  variant="light"
+                  onPress={closeModal}
+                >
+                  Cancel
+                </Button>
+                <Button radius="sm" color="primary" type="submit">Submit</Button>
+              </div>
+            </form>
+          </ModalBody>
         </ModalContent>
       </Modal>
     </div>
