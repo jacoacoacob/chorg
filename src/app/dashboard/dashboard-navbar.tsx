@@ -26,7 +26,15 @@ function DashboardNavbar() {
     >
       <NavbarBrand className="font-bold text-2xl">CHORG</NavbarBrand>
       <NavbarContent justify="end">
-        <Button onPress={onLogout}>Logout</Button>
+        <Button
+          size="sm"
+          radius="sm"
+          variant="light"
+          className="text-sm"
+          onPress={onLogout}
+        >
+          Logout
+        </Button>
       </NavbarContent>
     </Navbar>
   )

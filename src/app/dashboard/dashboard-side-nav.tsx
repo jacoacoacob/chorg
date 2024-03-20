@@ -47,7 +47,7 @@ function DashboardSideNav() {
               key={route.href}
               href={route.href}
               variant="flat"
-              className={`border border-transparent ${route.isActive ? "border-slate-400" : ""}`}
+              className={`border border-transparent ${route.isActive ? "bg-slate-200" : ""}`}
             >
               {route.label}
             </ListboxItem>

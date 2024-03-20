@@ -17,13 +17,13 @@ function useGroupChoreSets(groupId: string) {
   });
 }
 
-function useCreateChoreSet(groupId: string) {
-  const onSuccess = useInvalidateQueries([QueryKeyValue.GROUP_CHORE_SETS, groupId]);
+function useCreateChoreSet(group_id: string) {
+  const onSuccess = useInvalidateQueries([QueryKeyValue.GROUP_CHORE_SETS, group_id]);
 
   return useMutation({
-    mutationFn: (columns: CreateChoreSetCols) => fetchCreateChoreSet(
+    mutationFn: ({ display_name }: Omit<CreateChoreSetCols, "group_id">) => fetchCreateChoreSet(
       supabase,
-      columns
+      { group_id, display_name }
     ),
     onSuccess,
   });

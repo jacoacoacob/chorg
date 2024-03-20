@@ -2,14 +2,12 @@
 
 import React from "react";
 import { useParams } from "next/navigation";
-import { useGroupChoreSets } from "@/lib/chore-set.queries";
 import { useGroup, useGroups } from "@/lib/group.queries";
-import { GroupChoreSets } from "../../../_components/group-chore-sets";
+import { GroupChoreSets } from "./group-chore-sets";
 
 function GroupDetails() {
   const { groupId } = useParams<{ groupId: string }>();
 
-  const { data: choreSets } = useGroupChoreSets(groupId);
   const { data: group } = useGroup(groupId);
 
   return (

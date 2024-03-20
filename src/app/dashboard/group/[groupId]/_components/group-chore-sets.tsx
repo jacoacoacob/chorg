@@ -1,8 +1,9 @@
 import { IconChevronRight } from "@/components/icon-chevron-right";
 import { useGroupChoreSets } from "@/lib/chore-set.queries";
-import { Listbox, ListboxItem, type Selection } from "@nextui-org/react";
+import { Button, Listbox, ListboxItem, ListboxSection, type Selection } from "@nextui-org/react";
 import React from "react";
 import { GroupChoreSetChores } from "./group-chore-set-chores";
+import { CreateChoreSet } from "./create-chore-set";
 
 interface Props {
   groupId: string;
@@ -32,21 +33,24 @@ function GroupChoreSets({ groupId }: Props) {
           selectedKeys={selected}
           onSelectionChange={setSelected}
         >
-          {(choreSets || []).map((choreSet) =>
-            <ListboxItem
-              variant="faded"
-              key={choreSet.id}
-              className={selectedChoreSet?.id === choreSet.id ? "border-zinc-400" : ""}
-              selectedIcon={({ isSelected }) =>
-                <IconChevronRight
-                  className={`w-5 h-5 -translate-y-1 transition duration-75 ${isSelected ? "font-bold" : "rotate-90 text-slate-400"}`}
-                />
-              }
-            >
-              {choreSet.display_name} 
-            </ListboxItem>
-          )}
+          <ListboxSection>
+            {(choreSets || []).map((choreSet) =>
+              <ListboxItem
+                variant="faded"
+                key={choreSet.id}
+                className={selectedChoreSet?.id === choreSet.id ? "border-zinc-400" : ""}
+                selectedIcon={({ isSelected }) =>
+                  <IconChevronRight
+                    className={`w-5 h-5 -translate-y-1 transition duration-75 ${isSelected ? "font-bold" : "rotate-90 text-slate-400"}`}
+                  />
+                }
+              >
+                {choreSet.display_name} 
+              </ListboxItem>
+            )}
+          </ListboxSection>
         </Listbox>
+        <CreateChoreSet />
       </div>
       {selectedChoreSet && <GroupChoreSetChores chores={selectedChoreSet.chores} />}
     </div>
