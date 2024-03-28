@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  /* soh (visible-on-hover) */
+  .voh-parent .voh-child {
+    visibility: hidden;
+  }
+  .voh-parent:hover .voh-child,
+  .voh-parent:focus .voh-child {
+    visibility: visible;
+  }
+}
+
